@@ -30,7 +30,8 @@ def encrypt_message(message):
     # print(key)
 
     key = get_secret()  # b"SgC_PuQOhFINn8XkKhnWMOKtWTSl8RnUXchTbeCz1XS="
-
+    print(type(key))
+    print(key)
     encoded_message = message.encode()
     f = Fernet(key)
     encrypted_message = f.encrypt(encoded_message)
