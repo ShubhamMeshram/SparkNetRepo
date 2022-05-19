@@ -44,6 +44,8 @@ class JobManager(object):
         self.spark.conf.set(
             "fs.s3a.assumed.role.arn",
             "arn:aws:iam::113911312463:role/sparknet_iam_s3_role",
+            "fs.s3a.aws.credentials.provider",
+            "org.apache.hadoop.fs.s3a.AnonymousAWSCredentialsProvider",
         )
 
         self.sc.setLogLevel(log_level)
