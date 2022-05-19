@@ -91,14 +91,14 @@ class JobManager(object):
         obtained either from the config or from current datetime
         """
 
-        date_str = job.get_run_date_str("%Y%m%d")
+        date_str = self.get_run_date_str("%Y%m%d")
 
         format_dict = {
             "str_day": date_str[6:8],
             "str_month": date_str[4:6],
             "str_year": date_str[0:4],
         }
-        for table_name, data_source in config["paths"].items():
+        for table_name, data_source in self.config["paths"].items():
             self.config["paths"][table_name]["path"] = data_source[
                 "path"
             ].format(**format_dict)
