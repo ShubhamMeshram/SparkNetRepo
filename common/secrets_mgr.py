@@ -59,7 +59,8 @@ def get_secret():
             )
 
         # Your code goes here.
-        print(get_secret_value_response)
+    return get_secret_value_response
 
 
-get_secret()
+a = get_secret()
+print(a)
