@@ -58,8 +58,8 @@ def get_secret():
                 get_secret_value_response["SecretBinary"]
             )
 
-    # Your code goes here.
-    print(get_secret_value_response)
+        # Your code goes here.
+        print(get_secret_value_response)
 
 
 get_secret()
