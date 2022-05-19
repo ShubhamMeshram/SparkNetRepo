@@ -27,8 +27,10 @@ def get_secret():
         get_secret_value_response = client.get_secret_value(
             SecretId=secret_name
         )
+        print("inside try")
         print(get_secret_value_response)
     except ClientError as e:
+        print("inside except")
         if e.response["Error"]["Code"] == "DecryptionFailureException":
             # Secrets Manager can't decrypt the protected secret text using the provided KMS key.
             # Deal with the exception here, and/or rethrow at your discretion.
@@ -50,12 +52,15 @@ def get_secret():
             # Deal with the exception here, and/or rethrow at your discretion.
             raise e
     else:
+        print("inside els")
         # Decrypts secret using the associated KMS key.
         # Depending on whether the secret is a string or binary, one of these fields will be populated.
         if "SecretString" in get_secret_value_response:
+            print("inside inner if")
             secret = get_secret_value_response["SecretString"]
             print(secret)
         else:
+            print("inside inner else")
             decoded_binary_secret = base64.b64decode(
                 get_secret_value_response["SecretBinary"]
             )
