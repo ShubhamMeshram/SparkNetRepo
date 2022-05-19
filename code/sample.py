@@ -28,6 +28,7 @@ def ReadConfigFile(yaml_file):
 
 
 def main_fn(job):
+    config = job.add_dates_to_paths(config)
     usr_url = job.config["params"]["usr_api_endpoint"]
     msg_url = job.config["params"]["msg_api_endpoint"]
     health_flag, usr_request, error_msg = PingAPI(usr_url)
