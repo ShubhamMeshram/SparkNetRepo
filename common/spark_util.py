@@ -14,7 +14,7 @@ def qry_output(job, analytics_qry_hdr):
     Returns:
         df (pandas dataframe)   - Pandas df with history of dq values
     """
-    sql_qry = job.bconfig["analytics_queries"][analytics_qry_hdr]["qry"]
+    sql_qry = job.config["analytics_queries"][analytics_qry_hdr]["qry"]
     df = job.spark.sql(sql_qry).toPandas().reset_index(drop=True)
     return df
 
