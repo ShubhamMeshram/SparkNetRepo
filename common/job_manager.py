@@ -41,6 +41,10 @@ class JobManager(object):
         self.logger = log4j_logger.LogManager.getLogger(self.app_name)
 
         self.spark = SparkSession.builder.appName(self.app_name).getOrCreate()
+        self.spark.conf.set(
+            "fs.s3a.assumed.role.arn",
+            "arn:aws:iam::113911312463:role/sparknet_iam_s3_role",
+        )
 
         self.sc.setLogLevel(log_level)
         print(f"Started Spark application {self.app_name}")
