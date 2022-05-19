@@ -60,16 +60,7 @@ class JobManager(object):
         self.sc.setLogLevel(log_level)
         print(f"Started Spark application {self.app_name}")
 
-    def write(self, df, table_name, config, mode="overwrite"):
-        print(f"Starting write operation for {table_name} dataset")
-        path = config["paths"][table_name]["path"]
-        fmt = config["paths"][table_name]["format"]
-        if fmt == "parquet":
-            df.write.parquet(path, mode=mode)
-        elif fmt == "csv":
-            df.write.csv(path, header=True, sep=",", mode=mode)
-        else:
-            print("Incorrect file format, kindly check the config file")
+    
 
     def get_run_date_str(self, fmt="%Y%m%d"):
         """

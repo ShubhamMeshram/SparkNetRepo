@@ -116,4 +116,4 @@ usr_df = encryption_fn(usr_df)
 usr_df = decryption_fn(usr_df)
 
 usr_df.select("firstName", "fname_en", "fname_de").show(500, False)
-job.sc.stop()
+#job.sc.stop()
