@@ -1,0 +1,64 @@
+params:
+  usr_api_endpoint: "https://619ca0ea68ebaa001753c9b0.mockapi.io/evaluation/dataengineer/jr/v1/users"
+  msg_api_endpoint: "https://619ca0ea68ebaa001753c9b0.mockapi.io/evaluation/dataengineer/jr/v1/messages"
+  usr_json_response: "/home/hadoop/usr_api.json"
+  msg_json_response: "/home/hadoop/msg_api.json"
+
+
+paths:
+  # intermediate raw datasets
+  usr_api_raw:
+    path: 's3://memberacquisition-data-out-prod/users/tredence/smeshram/sparknet/raw/usr_api.json'
+  msg_api_raw:
+    path: 's3://memberacquisition-data-out-prod/users/tredence/smeshram/sparknet/raw/msg_api.json'
+
+  # Output datasets
+  user:
+    path: 's3://memberacquisition-data-out-prod/users/tredence/smeshram/sparknet/processed/user/year={str_year}/month={str_month}/day={str_day}'
+    format: 'parquet'
+  user_subscription:
+    path: 's3://memberacquisition-data-out-prod/users/tredence/smeshram/sparknet/processed/user_subscription/year={str_year}/month={str_month}/day={str_day}'
+    format: 'parquet'
+  user_attributes:
+    path: 's3://memberacquisition-data-out-prod/users/tredence/smeshram/sparknet/processed/user_attributes/year={str_year}/month={str_month}/day={str_day}'
+    format: 'parquet'
+  msg:
+    path: 's3://memberacquisition-data-out-prod/users/tredence/smeshram/sparknet/processed/msg/year={str_year}/month={str_month}/day={str_day}'
+    format: 'parquet'
+  analytics_op:
+    path: 's3://memberacquisition-data-out-prod/users/tredence/smeshram/sparknet/processed/analytics_op/year={str_year}/month={str_month}/day={str_day}'
+    format: 'csv'
+
+
+  # Output intermediate parquet files to archive
+  household_prospect_archive_intermediate:
+    path: 's3://memberacquisition-data-out-prod/intermediates/household_prospect/archive/year={str_year}/month={str_month}/day={str_day}'
+    format: 'parquet'
+
+  bronze_household_prospect_archive_intermediate:
+    path: 's3://memberacquisition-data-out-prod/intermediates/bronze_household_prospect/archive/year={str_year}/month={str_month}/day={str_day}'
+    format: 'parquet'
+# Folder name for the archived files
+archive: 's3://memberacquisition-data-in-prod/bi_stage/archive/'
+stage: 's3://memberacquisition-data-in-prod/bi_stage/'
+
+analytics_queries:
+    msgs_sent_per_day:
+        qry: "SELECT count(*) as msg_cnt FROM msg_df"
+    lonely_users:
+        qry: "SELECT distinct(userId) as lonely_usr FROM usr_df except SELECT distinct(receiverId) FROM msg_df"
+    active_sub_cnt:
+        qry: "SELECT count(*) as actv_sub_cnt from user_sub_df where status =='Active'"
+    freemium_users:
+        qry: "SELECT distinct(userId) as freemiuim_userId from user_sub_df_slim where status !='Active' intersect SELECT distinct(senderId) as sub_cnt from msg_df"
+
+dq_check_queries:
+  msgs_sent_per_day:
+      qry: "SUM(CASE WHEN sale_price_ranges NOT IN ('C','L','B','I','F','J','E','U','H','D','G','K','') THEN 1 ELSE 0 END)"
+  lonely_users:
+      qry: "SUM(CASE WHEN sale_price_ranges NOT IN ('C','L','B','I','F','J','E','U','H','D','G','K','') THEN 1 ELSE 0 END)"
+  lonely_users:
+      qry: "SUM(CASE WHEN sale_price_ranges NOT IN ('C','L','B','I','F','J','E','U','H','D','G','K','') THEN 1 ELSE 0 END)"
+  inactive_sub_msg:
+      qry: "SUM(CASE WHEN sale_price_ranges NOT IN ('C','L','B','I','F','J','E','U','H','D','G','K','') THEN 1 ELSE 0 END)"
+                                                                                                                             
