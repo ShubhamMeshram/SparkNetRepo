@@ -3,6 +3,8 @@ from cryptography.fernet import Fernet
 from pyspark.sql.functions import col, udf
 from pyspark.sql.types import StringType, TimestampType
 
+from common.secrets_mgr import get_secret
+
 
 def load_key():
     """
@@ -27,7 +29,7 @@ def encrypt_message(message):
     # key = load_key()
     # print(key)
 
-    key = b"SgC_PuQOhFINn8XkKhnWMOKtWTSl8RnUXchTbeCz1XS="
+    key = get_secret()  # b"SgC_PuQOhFINn8XkKhnWMOKtWTSl8RnUXchTbeCz1XS="
 
     encoded_message = message.encode()
     f = Fernet(key)
@@ -42,7 +44,7 @@ def decrypt_message(encrypted_message):
     Decrypts an encrypted message
     """
     # key = load_key()
-    key = b"SgC_PuQOhFINn8XkKhnWMOKtWTSl8RnUXchTbeCz1XS="
+    key = get_secret()  # b"SgC_PuQOhFINn8XkKhnWMOKtWTSl8RnUXchTbeCz1XS="
 
     f = Fernet(key)
     decrypted_message = f.decrypt(encrypted_message)

@@ -10,6 +10,7 @@ from botocore.exceptions import ClientError
 
 
 def get_secret():
+    print("Contacting AWS Secrets Manager for secret-key")
 
     secret_name = "sparknet-crpyt-key"
     region_name = "us-east-1"
@@ -58,20 +59,11 @@ def get_secret():
         # Decrypts secret using the associated KMS key.
         # Depending on whether the secret is a string or binary, one of these fields will be populated.
         if "SecretString" in get_secret_value_response:
-            print("inside inner if")
             secret = get_secret_value_response["SecretString"]
-            print(secret)
-            print(type(secret))
-            aa = ast.literal_eval(secret)
-            print(type(aa))
-            print(aa.get("secret-key"))
+            actual_secret = ast.literal_eval(secret).get("secret-key"))
+            return actual_secret
         else:
             print("inside inner else")
             decoded_binary_secret = base64.b64decode(
                 get_secret_value_response["SecretBinary"]
             )
-        # Your code goes here.
-
-
-a = get_secret()
-print(a)
