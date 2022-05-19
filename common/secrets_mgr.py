@@ -59,6 +59,8 @@ def get_secret(secret_name):
         # Depending on whether the secret is a string or binary, one of these fields will be populated.
         if "SecretString" in get_secret_value_response:
             secret = get_secret_value_response["SecretString"]
+            print(secret)
+            print(type(secret))
             actual_secret = ast.literal_eval(secret).get("secret-key")
             return str.encode(actual_secret)
         else:
