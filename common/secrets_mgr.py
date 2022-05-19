@@ -2,6 +2,7 @@
 # If you need more information about configurations or implementing the sample code, visit the AWS docs:
 # https://aws.amazon.com/developers/getting-started/python/
 
+import ast
 import base64
 
 import boto3
@@ -28,6 +29,7 @@ def get_secret():
             SecretId=secret_name
         )
     except ClientError as e:
+        print(e.response["Error"]["Code"])
         if e.response["Error"]["Code"] == "DecryptionFailureException":
             # Secrets Manager can't decrypt the protected secret text using the provided KMS key.
             # Deal with the exception here, and/or rethrow at your discretion.
@@ -48,6 +50,10 @@ def get_secret():
             # We can't find the resource that you asked for.
             # Deal with the exception here, and/or rethrow at your discretion.
             raise e
+        elif e.response["Error"]["Code"] == "AccessDeniedException":
+            # You dont have enough permissions
+            # Deal with the exception here, and/or rethrow at your discretion.
+            raise e
     else:
         # Decrypts secret using the associated KMS key.
         # Depending on whether the secret is a string or binary, one of these fields will be populated.
@@ -56,7 +62,9 @@ def get_secret():
             secret = get_secret_value_response["SecretString"]
             print(secret)
             print(type(secret))
-            print(secret.get("secret-key"))
+            aa = ast.literal_eval(secret)
+            print(type(aa))
+            print(aa.get("secret-key"))
         else:
             print("inside inner else")
             decoded_binary_secret = base64.b64decode(
