@@ -12,6 +12,7 @@ import pyspark.sql.functions as f
 import requests
 import yaml
 from common.api_util import *
+from common.encrpytion import *
 from common.job_manager import JobManager
 from common.s3_util import *
 from common.spark_util import *
@@ -93,8 +94,17 @@ def main_fn(job):
     job.write(user_sub_df, "user_subscription", job.config)
     job.write(msg_df, "msg", job.config)
     GenerateAnalyticsOutput(job, job.config)
+    return usr_df
+
+
+def encryption_fn(usr_df):
+    encrypt_message_fn = udf(lambda x: encrypt_message(x), StringType())
+    r = usr_df.withColumn(
+        "fname_en", encrypt_message_fn(col("firstname"))
+    ).show(500, False)
 
 
 job = JobManager("dna_mbr_mfi", config_path="conf/spark_net.yaml")
-main_fn(job)
+usr_df = main_fn(job)
+encryption_fn(usr_df)
 job.sc.stop()
