@@ -42,10 +42,10 @@ class JobManager(object):
 
         self.spark = (
             SparkSession.builder.appName(self.app_name)
-            .config(
-                "fs.s3a.aws.credentials.provider",
-                "org.apache.hadoop.fs.s3a.AnonymousAWSCredentialsProvider",
-            )
+        #    .config(
+        #        "fs.s3a.aws.credentials.provider",
+        #        "org.apache.hadoop.fs.s3a.AnonymousAWSCredentialsProvider",
+        #    )
             .getOrCreate()
         )
         #self.spark.conf.set(
