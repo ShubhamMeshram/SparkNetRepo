@@ -51,16 +51,15 @@ def main_fn(job):
     msg_df = job.ConvertStringToTimeStamp(msg_df, "createdAt")
 
     usr_df = job.GetLatestSlimDataset("userId", "updatedAt", usr_df)
-    user_sub_df_slim = job.GetLatestSlimDataset(
-        "userId", "startDate", user_sub_df
-    )
 
     # create user_sub and user_attr table
     user_attr_df = usr_df.select("userId", "profile.*")
     user_sub_df = usr_df.select(
         "userId", explode_outer("subscription")
     ).select("userId", "col.*")
-
+    user_sub_df_slim = job.GetLatestSlimDataset(
+        "userId", "startDate", user_sub_df
+    )
     usr_df = usr_df.drop("profile")
     usr_df = usr_df.drop("subscription")
     # adding feature column -domain
