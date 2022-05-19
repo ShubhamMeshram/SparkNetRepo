@@ -20,7 +20,7 @@ def encrypt_message(message):
     Encrypts a message
     """
 
-    key = get_secret()
+    key = get_secret("sparknet-crpyt-key")
     encoded_message = message.encode()
     f = Fernet(key)
     encrypted_message = f.encrypt(encoded_message)
@@ -32,7 +32,7 @@ def decrypt_message(encrypted_message):
     """
     Decrypts an encrypted message
     """
-    key = get_secret()
+    key = get_secret("sparknet-crpyt-key")
 
     f = Fernet(key)
     decrypted_message = f.decrypt(encrypted_message)
