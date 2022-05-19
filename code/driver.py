@@ -89,7 +89,7 @@ def encryption_fn(usr_df, col_list):
         temp_df = usr_df.withColumn(
             column + "_en", encrypt_message_udf(col(column))
         )
-    temp_df.drop(col_list)
+    temp_df.drop(*col_list)
     return temp_df
 
 
