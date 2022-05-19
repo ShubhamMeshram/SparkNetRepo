@@ -67,11 +67,11 @@ class JobManager(object):
         if fmt == "parquet":
             df.write.option("fs.s3a.committer.name", "partitioned").option(
                 "fs.s3a.committer.staging.conflict-mode", "replace"
-            ).option("fs.s3a.fast.upload.buffer", "bytebuffer").option(
-                mode, mode
-            ).parquet(
-                path
-            )
+            ).option("fs.s3a.fast.upload.buffer", "bytebuffer").parquet(
+                path,mode=mode)
+
+                        #option(mode, mode).
+
         elif fmt == "csv":
             df.write.csv(path, header=True, sep=",", mode=mode)
         else:
