@@ -104,7 +104,7 @@ class JobManager(object):
             ].format(**format_dict)
         return config
 
-    def ConvertStringToTimeStamp(spark_df, ts_col):
+    def ConvertStringToTimeStamp(self, spark_df, ts_col):
         spark_df = spark_df.withColumn(
             "temp_ts_col", spark_df[ts_col].cast(TimestampType())
         )
