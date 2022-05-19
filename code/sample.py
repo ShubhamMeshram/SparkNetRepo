@@ -88,10 +88,10 @@ def main_fn(job):
     user_sub_df_slim.registerTempTable("user_sub_df_slim")
 
     # write all 4 tables to S3
-    write(usr_df, "user", job.config)
-    write(user_attr_df, "user_attributes", job.config)
-    write(user_sub_df, "user_subscription", job.config)
-    write(msg_df, "msg", job.config)
+    job.write(usr_df, "user", job.config)
+    job.write(user_attr_df, "user_attributes", job.config)
+    job.write(user_sub_df, "user_subscription", job.config)
+    job.write(msg_df, "msg", job.config)
     GenerateAnalyticsOutput(job, job.config)
     return usr_df
 
