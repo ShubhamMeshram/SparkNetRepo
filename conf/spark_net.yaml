@@ -46,7 +46,7 @@ analytics_queries:
     msgs_sent_per_day:
         qry: "SELECT count(*) as msg_cnt,to_date(createdAt) as date FROM msg_df group by date order by msg_cnt desc"
     lonely_users:
-        qry: "SELECT distinct(userId) as lonely_usr FROM usr_df except SELECT distinct(receiverId) FROM msg_df"
+        qry: "SELECT distinct(userId) as lonely_usrId FROM usr_df except SELECT distinct(receiverId) FROM msg_df"
     active_sub_cnt:
         qry: "SELECT STRING(count(*)) as actv_sub_cnt from user_sub_df where status =='Active'"
     freemium_users:

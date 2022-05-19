@@ -27,7 +27,6 @@ def GenerateAnalyticsOutput(job, config):
     appended_data = pd.concat(appended_data, axis=1).replace(
         np.nan, "", regex=True
     )
-    print(appended_data)
     job.write(
         job.spark.createDataFrame(appended_data).coalesce(1),
         "analytics_op",
