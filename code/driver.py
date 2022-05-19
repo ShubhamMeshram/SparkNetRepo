@@ -59,26 +59,23 @@ def main_fn(job):
     usr_df = job.ConvertStringToTimeStamp(usr_df, "updatedAt")
     msg_df = job.ConvertStringToTimeStamp(msg_df, "createdAt")
 
+
+    def GetLatestSlimDataset(partitionByCol,ColforSlimming,spark_df):
     #prepare slim version with latest subscription status
-    w = Window.partitionBy("userId")
-    usr_df = (
-        usr_df.withColumn("maxB", f.max("updatedAt").over(w))
-        .where(f.col("updatedAt") == f.col("maxB"))
-        .drop("maxB")
-    )
+        w = Window.partitionBy(partitionByCol) 
+        temp_df = (
+        spark_df.withColumn("temp_col", f.max(ColforSlimming).over(w))ColforSlimming
+        .where(f.col(ColforSlimming) == f.col("temp_col"))ColforSlimming
+        .drop("temp_col")
+        )
+        return temp_df
+    usr_df= GetLatestSlimDataset("userId","updatedAt",usr_df)
+    user_sub_df_slim = GetLatestSlimDataset("userId","startDate",user_sub_df)
     # create user_sub and user_attr table
     user_attr_df = usr_df.select("userId", "profile.*")
     user_sub_df = usr_df.select(
         "userId", explode_outer("subscription")
     ).select("userId", "col.*")
-
-    #prepare slim version with latest subscription status
-    w = Window.partitionBy("userId")
-    user_sub_df_slim = (
-        user_sub_df.withColumn("maxB", f.max("startDate").over(w))
-        .where(f.col("startDate") == f.col("maxB"))
-        .drop("maxB")
-    )
 
     usr_df = usr_df.drop("profile")
     usr_df = usr_df.drop("subscription")
