@@ -1,8 +1,8 @@
 params:
   usr_api_endpoint: "https://619ca0ea68ebaa001753c9b0.mockapi.io/evaluation/dataengineer/jr/v1/users"
   msg_api_endpoint: "https://619ca0ea68ebaa001753c9b0.mockapi.io/evaluation/dataengineer/jr/v1/messages"
-  usr_json_response: "/home/ubuntu/smeshram/SparkNetRepo/conf/usr_api.json"
-  msg_json_response: "/home/ubuntu/smeshram/SparkNetRepo/conf/msg_api.json"
+  usr_json_response: "/home/ubuntu/temp_json/usr_api.json"
+  msg_json_response: "/home/ubuntu/temp_json/msg_api.json"
 
 
 paths:
