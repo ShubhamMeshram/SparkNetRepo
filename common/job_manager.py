@@ -48,10 +48,10 @@ class JobManager(object):
             )
             .getOrCreate()
         )
-        self.spark.conf.set(
-            "fs.s3a.assumed.role.arn",
-            "arn:aws:iam::113911312463:role/sparknet_iam_s3_role",
-        )
+        #self.spark.conf.set(
+        #    "fs.s3a.assumed.role.arn",
+        #    "arn:aws:iam::113911312463:role/sparknet_iam_s3_role",
+        #)
         self.spark.conf.set(
             "fs.s3a.access.key",
             "AKIARVBNEWBHT7UTF25K",
