@@ -27,6 +27,7 @@ def get_secret():
         get_secret_value_response = client.get_secret_value(
             SecretId=secret_name
         )
+        print(get_secret_value_response)
     except ClientError as e:
         if e.response["Error"]["Code"] == "DecryptionFailureException":
             # Secrets Manager can't decrypt the protected secret text using the provided KMS key.
@@ -53,13 +54,14 @@ def get_secret():
         # Depending on whether the secret is a string or binary, one of these fields will be populated.
         if "SecretString" in get_secret_value_response:
             secret = get_secret_value_response["SecretString"]
+            print(secret)
         else:
             decoded_binary_secret = base64.b64decode(
                 get_secret_value_response["SecretBinary"]
             )
+            print(decoded_binary_secret)
 
         # Your code goes here.
-    return get_secret_value_response
 
 
 a = get_secret()
