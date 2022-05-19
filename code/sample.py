@@ -106,6 +106,7 @@ def encryption_fn(usr_df):
 
 def decryption_fn(usr_df):
     decrypt_message_fn = udf(lambda x: decrypt_message(x), StringType())
+    usr_df.select("firstName", "fname_en").show(500, False)
     usr_df = usr_df.withColumn("fname_de", decrypt_message_fn(col("fname_en")))
     return usr_df
 
