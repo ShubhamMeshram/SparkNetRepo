@@ -88,10 +88,10 @@ def main_fn(job):
     user_sub_df_slim.registerTempTable("user_sub_df_slim")
 
     # write all 4 tables to S3
-    job.write(usr_df, "user", job.config)
-    job.write(user_attr_df, "user_attributes", job.config)
-    job.write(user_sub_df, "user_subscription", job.config)
-    job.write(msg_df, "msg", job.config)
+    write(usr_df, "user", job.config)
+    write(user_attr_df, "user_attributes", job.config)
+    write(user_sub_df, "user_subscription", job.config)
+    write(msg_df, "msg", job.config)
     GenerateAnalyticsOutput(job, job.config)
     return usr_df
 
@@ -116,4 +116,4 @@ usr_df = encryption_fn(usr_df)
 usr_df = decryption_fn(usr_df)
 
 usr_df.select("firstName", "fname_en", "fname_de").show(500, False)
-#job.sc.stop()
+# job.sc.stop()
