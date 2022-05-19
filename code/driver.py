@@ -87,7 +87,7 @@ def main_fn(job):
 def encryption_fn(usr_df, col_list):
     for column in col_list:
         temp_df = usr_df.withColumn(
-            col + "_en", encrypt_message_udf(col(column))
+            column + "_en", encrypt_message_udf(col(column))
         )
     temp_df.drop(col_list)
     return temp_df
