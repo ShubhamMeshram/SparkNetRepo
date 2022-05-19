@@ -19,9 +19,9 @@ def qry_output(job, analytics_qry_hdr):
     return df
 
 
-def GenerateAnalyticsOutput(job, config):
+def GenerateAnalyticsOutput(job):
     appended_data = []
-    for analytics_query in config["analytics_queries"].keys():
+    for analytics_query in job.config["analytics_queries"].keys():
         df_temp = qry_output(analytics_query)
         appended_data.append(df_temp)
     appended_data = pd.concat(appended_data, axis=1).replace(
@@ -30,5 +30,5 @@ def GenerateAnalyticsOutput(job, config):
     job.write(
         job.spark.createDataFrame(appended_data).coalesce(1),
         "analytics_op",
-        config,
+        job.config,
     )
