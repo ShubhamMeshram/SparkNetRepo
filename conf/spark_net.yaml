@@ -48,7 +48,7 @@ analytics_queries:
     lonely_users:
         qry: "SELECT distinct(userId) as lonely_usr FROM usr_df except SELECT distinct(receiverId) FROM msg_df"
     active_sub_cnt:
-        qry: "SELECT count(*) as actv_sub_cnt from user_sub_df where status =='Active'"
+        qry: "SELECT STRING(count(*)) as actv_sub_cnt from user_sub_df where status =='Active'"
     freemium_users:
         qry: "SELECT distinct(userId) as freemiuim_userId from user_sub_df_slim where status !='Active' intersect SELECT distinct(senderId) as sub_cnt from msg_df"
 
