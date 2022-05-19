@@ -61,22 +61,21 @@ class JobManager(object):
         print(f"Started Spark application {self.app_name}")
 
     def write(self, df, table_name, config, mode="overwrite"):
-    print(f"Starting write operation for {table_name} dataset")
-    path = config["paths"][table_name]["path"]
-    fmt = config["paths"][table_name]["format"]
-    if fmt == "parquet":
-        df.write.option("fs.s3a.committer.name", "partitioned").option(
-            "fs.s3a.committer.staging.conflict-mode", "replace"
-        ).option("fs.s3a.fast.upload.buffer", "bytebuffer").option(
-            mode=mode
-        ).parquet(
-            path
-        )
-
-    elif fmt == "csv":
-        df.write.csv(path, header=True, sep=",", mode=mode)
-    else:
-        print("Incorrect file format, kindly check the config file")
+        print(f"Starting write operation for {table_name} dataset")
+        path = config["paths"][table_name]["path"]
+        fmt = config["paths"][table_name]["format"]
+        if fmt == "parquet":
+            df.write.option("fs.s3a.committer.name", "partitioned").option(
+                "fs.s3a.committer.staging.conflict-mode", "replace"
+            ).option("fs.s3a.fast.upload.buffer", "bytebuffer").option(
+                mode=mode
+            ).parquet(
+                path
+            )
+        elif fmt == "csv":
+            df.write.csv(path, header=True, sep=",", mode=mode)
+        else:
+            print("Incorrect file format, kindly check the config file")
 
     def get_run_date_str(self, fmt="%Y%m%d"):
         """
