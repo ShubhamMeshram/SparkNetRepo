@@ -97,17 +97,16 @@ def main_fn(job):
 
 
 def encryption_fn(usr_df):
-    encrypt_message_fn = udf(lambda x: encrypt_message(x), StringType())
     usr_df = usr_df.withColumn(
-        "fname_en", encrypt_message_fn(col("firstName"))
+        "fname_en", encrypt_message_udf(col("firstName"))
     )
     return usr_df
 
 
 def decryption_fn(usr_df):
-    decrypt_message_fn = udf(lambda x: decrypt_message(x), StringType())
-    usr_df.select("firstName", "fname_en").show(500, False)
-    usr_df = usr_df.withColumn("fname_de", decrypt_message_fn(col("fname_en")))
+    usr_df = usr_df.withColumn(
+        "fname_de", decrypt_message_udf(col("fname_en"))
+    )
     return usr_df
 
 

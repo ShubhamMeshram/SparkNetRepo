@@ -49,3 +49,7 @@ def decrypt_message(encrypted_message):
 
     # print(decrypted_message.decode())
     return decrypted_message.decode()
+
+
+encrypt_message_udf = udf(lambda x: encrypt_message(x), StringType())
+decrypt_message_udf = udf(lambda x: decrypt_message(x), StringType())
