@@ -23,7 +23,7 @@ def main_fn(job):
 
 
 job = JobManager(
-    "dna_mbr_mfi", config_path=ReadConfigFile("conf/spark_net.yaml")
+    "dna_mbr_mfi", config_path="conf/spark_net.yaml")
 )
 print(job)
 for analytics_query in job.config["analytics_queries"].keys():
