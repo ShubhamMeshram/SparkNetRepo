@@ -42,10 +42,10 @@ class JobManager(object):
 
         self.spark = (
             SparkSession.builder.appName(self.app_name)
-            # .config(
-            #    "fs.s3a.aws.credentials.provider",
-            #    "org.apache.hadoop.fs.s3a.AnonymousAWSCredentialsProvider",
-            # )
+            .config(
+                "fs.s3a.aws.credentials.provider",
+                "org.apache.hadoop.fs.s3a.AnonymousAWSCredentialsProvider",
+            )
             .getOrCreate()
         )
         self.spark.conf.set(
@@ -68,9 +68,10 @@ class JobManager(object):
             df.write.option("fs.s3a.committer.name", "partitioned").option(
                 "fs.s3a.committer.staging.conflict-mode", "replace"
             ).option("fs.s3a.fast.upload.buffer", "bytebuffer").parquet(
-                path,mode=mode)
+                path, mode=mode
+            )
 
-                        #option(mode, mode).
+            # option(mode, mode).
 
         elif fmt == "csv":
             df.write.csv(path, header=True, sep=",", mode=mode)
