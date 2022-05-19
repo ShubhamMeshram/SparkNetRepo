@@ -8,39 +8,39 @@ params:
 paths:
   # intermediate raw datasets
   usr_api_raw:
-    path: 's3://sparknet-bucket/sparknet/raw/usr_api.json'
+    path: 's3a://sparknet-bucket/sparknet/raw/usr_api.json'
   msg_api_raw:
-    path: 's3://sparknet-bucket/sparknet/raw/msg_api.json'
+    path: 's3a://sparknet-bucket/sparknet/raw/msg_api.json'
 
   # Output datasets
   user:
-    path: 's3://sparknet-bucket/sparknet/processed/user/year={str_year}/month={str_month}/day={str_day}'
+    path: 's3a://sparknet-bucket/sparknet/processed/user/year={str_year}/month={str_month}/day={str_day}'
     format: 'parquet'
   user_subscription:
-    path: 's3://sparknet-bucket/sparknet/processed/user_subscription/year={str_year}/month={str_month}/day={str_day}'
+    path: 's3a://sparknet-bucket/sparknet/processed/user_subscription/year={str_year}/month={str_month}/day={str_day}'
     format: 'parquet'
   user_attributes:
-    path: 's3://sparknet-bucket/sparknet/processed/user_attributes/year={str_year}/month={str_month}/day={str_day}'
+    path: 's3a://sparknet-bucket/sparknet/processed/user_attributes/year={str_year}/month={str_month}/day={str_day}'
     format: 'parquet'
   msg:
-    path: 's3://sparknet-bucket/sparknet/processed/msg/year={str_year}/month={str_month}/day={str_day}'
+    path: 's3a://sparknet-bucket/sparknet/processed/msg/year={str_year}/month={str_month}/day={str_day}'
     format: 'parquet'
   analytics_op:
-    path: 's3://sparknet-bucket/sparknet/processed/analytics_op/year={str_year}/month={str_month}/day={str_day}'
+    path: 's3a://sparknet-bucket/sparknet/processed/analytics_op/year={str_year}/month={str_month}/day={str_day}'
     format: 'csv'
 
 
   # Output intermediate parquet files to archive
   household_prospect_archive_intermediate:
-    path: 's3://memberacquisition-data-out-prod/intermediates/household_prospect/archive/year={str_year}/month={str_month}/day={str_day}'
+    path: 's3a://memberacquisition-data-out-prod/intermediates/household_prospect/archive/year={str_year}/month={str_month}/day={str_day}'
     format: 'parquet'
 
   bronze_household_prospect_archive_intermediate:
-    path: 's3://memberacquisition-data-out-prod/intermediates/bronze_household_prospect/archive/year={str_year}/month={str_month}/day={str_day}'
+    path: 's3a://memberacquisition-data-out-prod/intermediates/bronze_household_prospect/archive/year={str_year}/month={str_month}/day={str_day}'
     format: 'parquet'
 # Folder name for the archived files
-archive: 's3://memberacquisition-data-in-prod/bi_stage/archive/'
-stage: 's3://memberacquisition-data-in-prod/bi_stage/'
+archive: 's3a://memberacquisition-data-in-prod/bi_stage/archive/'
+stage: 's3a://memberacquisition-data-in-prod/bi_stage/'
 
 analytics_queries:
     msgs_sent_per_day:
