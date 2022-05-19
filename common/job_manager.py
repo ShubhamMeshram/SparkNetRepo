@@ -68,7 +68,7 @@ class JobManager(object):
             df.write.option("fs.s3a.committer.name", "partitioned").option(
                 "fs.s3a.committer.staging.conflict-mode", "replace"
             ).option("fs.s3a.fast.upload.buffer", "bytebuffer").option(
-                mode=mode
+                mode, mode
             ).parquet(
                 path
             )
