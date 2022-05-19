@@ -16,7 +16,6 @@ from common.encrpytion import *
 from common.job_manager import JobManager
 from common.s3_util import *
 from common.spark_util import *
-from pyspark.sql import Window
 from pyspark.sql.functions import *
 from pyspark.sql.functions import col, explode_outer, split
 from pyspark.sql.types import DateType, TimestampType
@@ -59,18 +58,11 @@ def main_fn(job):
     usr_df = job.ConvertStringToTimeStamp(usr_df, "updatedAt")
     msg_df = job.ConvertStringToTimeStamp(msg_df, "createdAt")
 
+    usr_df = job.GetLatestSlimDataset("userId", "updatedAt", usr_df)
+    user_sub_df_slim = job.GetLatestSlimDataset(
+        "userId", "startDate", user_sub_df
+    )
 
-    def GetLatestSlimDataset(partitionByCol,ColforSlimming,spark_df):
-    #prepare slim version with latest subscription status
-        w = Window.partitionBy(partitionByCol) 
-        temp_df = (
-        spark_df.withColumn("temp_col", f.max(ColforSlimming).over(w))ColforSlimming
-        .where(f.col(ColforSlimming) == f.col("temp_col"))ColforSlimming
-        .drop("temp_col")
-        )
-        return temp_df
-    usr_df= GetLatestSlimDataset("userId","updatedAt",usr_df)
-    user_sub_df_slim = GetLatestSlimDataset("userId","startDate",user_sub_df)
     # create user_sub and user_attr table
     user_attr_df = usr_df.select("userId", "profile.*")
     user_sub_df = usr_df.select(

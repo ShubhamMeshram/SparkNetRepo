@@ -2,12 +2,13 @@ import datetime
 import os
 
 import pyspark.sql.functions as sqlf
+import pyspark.sql.functions as f
 import yaml
 from pyspark import SparkContext
-from pyspark.sql import SparkSession
+from pyspark.sql import SparkSession, Window
 from pyspark.sql.types import TimestampType
-from common.secrets_mgr import get_secret
 
+from common.secrets_mgr import get_secret
 
 
 class JobManager(object):
@@ -42,29 +43,31 @@ class JobManager(object):
         log4j_logger = self.sc._jvm.org.apache.log4j
         self.logger = log4j_logger.LogManager.getLogger(self.app_name)
 
-        self.spark = (
-            SparkSession.builder.appName(self.app_name).getOrCreate())
+        self.spark = SparkSession.builder.appName(self.app_name).getOrCreate()
         #    .config(
         #        "fs.s3a.aws.credentials.provider",
         #        "org.apache.hadoop.fs.s3a.AnonymousAWSCredentialsProvider",
         #    )
-            
-        
-        #self.spark.conf.set(
+
+        # self.spark.conf.set(
         #    "fs.s3a.assumed.role.arn",
         #    "arn:aws:iam::113911312463:role/sparknet_iam_s3_role",
-        #)
-        self.spark.conf.set(
-            "fs.s3a.access.key",
-            get_secret("admin-ak")
-        )
-        self.spark.conf.set(
-            "fs.s3a.secret.key",
-            get_secret("admin-sak")
-        )
+        # )
+        self.spark.conf.set("fs.s3a.access.key", get_secret("admin-ak"))
+        self.spark.conf.set("fs.s3a.secret.key", get_secret("admin-sak"))
 
         self.sc.setLogLevel(log_level)
         print(f"Started Spark application {self.app_name}")
+
+    def GetLatestSlimDataset(self, partitionByCol, ColforSlimming, spark_df):
+        # prepare slim version with latest subscription status
+        w = Window.partitionBy(partitionByCol)
+        temp_df = (
+            spark_df.withColumn("temp_col", f.max(ColforSlimming).over(w))
+            .where(f.col(ColforSlimming) == f.col("temp_col"))
+            .drop("temp_col")
+        )
+        return temp_df
 
     def write(self, df, table_name, config, mode="overwrite"):
         print(f"Starting write operation for {table_name} dataset")
