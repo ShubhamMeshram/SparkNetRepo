@@ -59,12 +59,20 @@ def main_fn(job):
     usr_df = job.ConvertStringToTimeStamp(usr_df, "updatedAt")
     msg_df = job.ConvertStringToTimeStamp(msg_df, "createdAt")
 
+    #prepare slim version with latest subscription status
+    w = Window.partitionBy("userId")
+    usr_df = (
+        usr_df.withColumn("maxB", f.max("updatedAt").over(w))
+        .where(f.col("updatedAt") == f.col("maxB"))
+        .drop("maxB")
+    )
     # create user_sub and user_attr table
     user_attr_df = usr_df.select("userId", "profile.*")
     user_sub_df = usr_df.select(
         "userId", explode_outer("subscription")
     ).select("userId", "col.*")
 
+    #prepare slim version with latest subscription status
     w = Window.partitionBy("userId")
     user_sub_df_slim = (
         user_sub_df.withColumn("maxB", f.max("startDate").over(w))
