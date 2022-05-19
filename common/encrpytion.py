@@ -47,4 +47,5 @@ def decrypt_message(encrypted_message):
     f = Fernet(key)
     decrypted_message = f.decrypt(encrypted_message)
 
-    print(decrypted_message.decode())
+    # print(decrypted_message.decode())
+    return decrypted_message
