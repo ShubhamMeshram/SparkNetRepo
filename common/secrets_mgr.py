@@ -62,7 +62,7 @@ def get_secret(secret_name):
             secret = get_secret_value_response["SecretString"]
             print(secret)
             print(type(secret))
-            actual_secret = ast.literal_eval(secret).get("secret_name")
+            actual_secret = ast.literal_eval(secret).get(secret_name)
             return str.encode(actual_secret)
         else:
             print("inside inner else")
