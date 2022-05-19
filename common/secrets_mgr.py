@@ -60,13 +60,14 @@ def get_secret(secret_name):
         if "SecretString" in get_secret_value_response:
             #print(get_secret_value_response)
             secret = get_secret_value_response["SecretString"]
-            print(secret)
-            print(type(secret))
+            #print(secret)
+            #print(type(secret))
             if secret_name== "sparknet-crpyt-key":
                 actual_secret = ast.literal_eval(secret).get(secret_name)
                 actual_secret = str.encode(actual_secret)
             else:
-                actual_secret = secret_name
+                actual_secret = ast.literal_eval(secret).get(secret_name)
+                #actual_secret = secret_name
             return actual_secret
         else:
             print("inside inner else")
