@@ -91,7 +91,7 @@ def main_fn(job):
     job.write(user_attr_df, "user_attributes", job.config)
     job.write(user_sub_df, "user_subscription", job.config)
     job.write(msg_df, "msg", job.config)
-    GenerateAnalyticsOutput(job.config)
+    GenerateAnalyticsOutput(job, job.config)
 
 
 job = JobManager("dna_mbr_mfi", config_path="conf/spark_net.yaml")
