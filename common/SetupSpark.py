@@ -34,7 +34,7 @@ class JobManager(object):
         else:
             self.config = {"paths": {}}
 
-        #self.run_date = datetime.datetime.today()
+        # self.run_date = datetime.datetime.today()
         self.config_path = config_path
 
         self.app_name = app_name
@@ -45,3 +45,4 @@ class JobManager(object):
         self.spark = SparkSession.builder.appName(self.app_name).getOrCreate()
 
         self.sc.setLogLevel(log_level)
+        print(f"Started Spark application {self.app_name}")
