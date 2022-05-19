@@ -44,7 +44,7 @@ class JobManager(object):
             SparkSession.builder.appName(self.app_name)
             .config(
                 "fs.s3a.aws.credentials.provider",
-                "org.apache.hadoop.fs.s3a.SimpleAWSCredentialsProvider",
+                "org.apache.hadoop.fs.s3a.AnonymousAWSCredentialsProvider",
             )
             .getOrCreate()
         )
