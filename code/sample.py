@@ -22,9 +22,7 @@ def main_fn(job):
     uploadlocaltoS3("msg", job.config)
 
 
-job = JobManager(
-    "dna_mbr_mfi", config_path="conf/spark_net.yaml")
-)
+job = JobManager("dna_mbr_mfi", config_path="conf/spark_net.yaml")
 print(job)
 for analytics_query in job.config["analytics_queries"].keys():
     print(analytics_query)
