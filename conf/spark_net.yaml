@@ -44,7 +44,7 @@ stage: 's3a://memberacquisition-data-in-prod/bi_stage/'
 
 analytics_queries:
     msgs_sent_per_day:
-        qry: "SELECT count(*) as msg_cnt FROM msg_df"
+        qry: "SELECT count(*) as msg_cnt,to_date(createdAt) as date FROM msg_df group by date order by msg_cnt desc"
     lonely_users:
         qry: "SELECT distinct(userId) as lonely_usr FROM usr_df except SELECT distinct(receiverId) FROM msg_df"
     active_sub_cnt:
