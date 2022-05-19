@@ -6,6 +6,8 @@ import yaml
 from pyspark import SparkContext
 from pyspark.sql import SparkSession
 from pyspark.sql.types import TimestampType
+from common.secrets_mgr import get_secret
+
 
 
 class JobManager(object):
@@ -54,11 +56,11 @@ class JobManager(object):
         #)
         self.spark.conf.set(
             "fs.s3a.access.key",
-            "AKIARVBNEWBHT7UTF25K",
+            get_secret("admin-ak"),
         )
         self.spark.conf.set(
             "fs.s3a.secret.key",
-            "+CYR3LfL/M+CSSBplw20dFsYJmZvc48pow02j2T+",
+            get_secret("admin-sak"),
         )
 
         self.sc.setLogLevel(log_level)
