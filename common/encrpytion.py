@@ -48,4 +48,4 @@ def decrypt_message(encrypted_message):
     decrypted_message = f.decrypt(encrypted_message)
 
     # print(decrypted_message.decode())
-    return decrypted_message
+    return decrypted_message.decode()
