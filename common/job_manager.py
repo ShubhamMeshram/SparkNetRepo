@@ -43,24 +43,24 @@ class JobManager(object):
         self.logger = log4j_logger.LogManager.getLogger(self.app_name)
 
         self.spark = (
-            SparkSession.builder.appName(self.app_name)
+            SparkSession.builder.appName(self.app_name).getOrCreate())
         #    .config(
         #        "fs.s3a.aws.credentials.provider",
         #        "org.apache.hadoop.fs.s3a.AnonymousAWSCredentialsProvider",
         #    )
-            .getOrCreate()
-        )
+            
+        
         #self.spark.conf.set(
         #    "fs.s3a.assumed.role.arn",
         #    "arn:aws:iam::113911312463:role/sparknet_iam_s3_role",
         #)
         self.spark.conf.set(
             "fs.s3a.access.key",
-            get_secret("admin-ak"),
+            get_secret("admin-ak")
         )
         self.spark.conf.set(
             "fs.s3a.secret.key",
-            get_secret("admin-sak"),
+            get_secret("admin-sak")
         )
 
         self.sc.setLogLevel(log_level)
