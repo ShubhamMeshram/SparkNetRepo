@@ -60,7 +60,7 @@ def get_secret():
         # Depending on whether the secret is a string or binary, one of these fields will be populated.
         if "SecretString" in get_secret_value_response:
             secret = get_secret_value_response["SecretString"]
-            actual_secret = ast.literal_eval(secret).get("secret-key"))
+            actual_secret = ast.literal_eval(secret).get("secret-key")
             return actual_secret
         else:
             print("inside inner else")
