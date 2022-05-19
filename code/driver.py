@@ -84,12 +84,12 @@ def main_fn(job):
     return usr_df
 
 
-def encryption_fn(usr_df, col_list):
-    for column in col_list:
+def encryption_fn(usr_df, col_tuple):
+    for column in col_tuple:
         temp_df = usr_df.withColumn(
             column + "_en", encrypt_message_udf(col(column))
         )
-    temp_df.drop(*col_list)
+    temp_df.drop(*col_tuple)
     return temp_df
 
 
@@ -103,10 +103,12 @@ def decryption_fn(usr_df, col_list):
 job = JobManager("dna_mbr_mfi", config_path="conf/spark_net.yaml")
 usr_df = main_fn(job)
 usr_df_en = encryption_fn(
-    usr_df, ["firstName", "lastName", "address", "email"]
+    usr_df, ("firstName", "lastName", "address", "email")
 )
 # usr_df = decryption_fn(usr_df)
 
-usr_df.show(500, False)
-usr_df_en.show(500, False)
+usr_df.select("firstName", "lastName", "address", "email").show(500, False)
+usr_df_en.select("firstName_en", "lastName_en", "address_en", "email_en").show(
+    500, False
+)
 # job.sc.stop()
