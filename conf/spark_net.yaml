@@ -1,8 +1,8 @@
 params:
   usr_api_endpoint: "https://619ca0ea68ebaa001753c9b0.mockapi.io/evaluation/dataengineer/jr/v1/users"
   msg_api_endpoint: "https://619ca0ea68ebaa001753c9b0.mockapi.io/evaluation/dataengineer/jr/v1/messages"
-  usr_json_response: "/home/hadoop/usr_api.json"
-  msg_json_response: "/home/hadoop/msg_api.json"
+  usr_json_response: "/home/ubuntu/smeshram/SparkNetRepo/conf/usr_api.json"
+  msg_json_response: "/home/ubuntu/smeshram/SparkNetRepo/conf/msg_api.json"
 
 
 paths:
@@ -61,4 +61,3 @@ dq_check_queries:
       qry: "SUM(CASE WHEN sale_price_ranges NOT IN ('C','L','B','I','F','J','E','U','H','D','G','K','') THEN 1 ELSE 0 END)"
   inactive_sub_msg:
       qry: "SUM(CASE WHEN sale_price_ranges NOT IN ('C','L','B','I','F','J','E','U','H','D','G','K','') THEN 1 ELSE 0 END)"
-                                                                                                                             
