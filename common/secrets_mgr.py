@@ -10,7 +10,6 @@ from botocore.exceptions import ClientError
 
 
 def get_secret():
-    print("Contacting AWS Secrets Manager for secret-key")
 
     secret_name = "sparknet-crpyt-key"
     region_name = "us-east-1"
