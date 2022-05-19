@@ -86,10 +86,10 @@ def main_fn(job):
 
 def encryption_fn(usr_df, col_tuple):
     for column in col_tuple:
-        temp_df = usr_df.withColumn(
+        usr_df = usr_df.withColumn(
             column + "_en", encrypt_message_udf(col(column))
         )
-    temp_df.drop(*col_tuple)
+    temp_df = usr_df.drop(*col_tuple)
     return temp_df
 
 
