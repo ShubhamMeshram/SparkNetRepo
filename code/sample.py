@@ -37,8 +37,8 @@ def main_fn(job):
 
     GenerateJSON(job.config["params"]["usr_json_response"], usr_request)
     GenerateJSON(job.config["params"]["msg_json_response"], msg_request)
-    # uploadlocaltoS3("user", job.config)
-    # uploadlocaltoS3("msg", job.config)
+    uploadlocaltoS3("user", job.config)
+    uploadlocaltoS3("msg", job.config)
 
     usr_df = (
         job.spark.read.format("json")

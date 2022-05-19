@@ -42,15 +42,19 @@ class JobManager(object):
 
         self.spark = (
             SparkSession.builder.appName(self.app_name)
-            .config(
-                "fs.s3a.aws.credentials.provider",
-                "org.apache.hadoop.fs.s3a.AnonymousAWSCredentialsProvider",
-            )
+            # .config(
+            #    "fs.s3a.aws.credentials.provider",
+            #    "org.apache.hadoop.fs.s3a.AnonymousAWSCredentialsProvider",
+            # )
             .getOrCreate()
         )
         self.spark.conf.set(
-            "fs.s3a.assumed.role.arn",
-            "arn:aws:iam::113911312463:role/sparknet_iam_s3_role",
+            "fs.s3a.access.key",
+            "AKIARVBNEWBHT7UTF25K",
+        )
+        self.spark.conf.set(
+            "fs.s3a.secret.key",
+            "+CYR3LfL/M+CSSBplw20dFsYJmZvc48pow02j2T+",
         )
 
         self.sc.setLogLevel(log_level)
