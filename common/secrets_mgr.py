@@ -31,6 +31,7 @@ def get_secret():
         print(get_secret_value_response)
     except ClientError as e:
         print("inside except")
+        print(e.response["Error"]["Code"])
         if e.response["Error"]["Code"] == "DecryptionFailureException":
             # Secrets Manager can't decrypt the protected secret text using the provided KMS key.
             # Deal with the exception here, and/or rethrow at your discretion.
