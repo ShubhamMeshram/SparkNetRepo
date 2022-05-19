@@ -60,12 +60,10 @@ def main_fn(job):
     msg_df = job.ConvertStringToTimeStamp(msg_df, "createdAt")
 
     # create user_sub and user_attr table
-    user_attr_df = usr_df.select("userId", "profile.*")  # .show(500,False)
+    user_attr_df = usr_df.select("userId", "profile.*")
     user_sub_df = usr_df.select(
         "userId", explode_outer("subscription")
-    ).select(
-        "userId", "col.*"
-    )  # .show(500,False)
+    ).select("userId", "col.*")
 
     w = Window.partitionBy("userId")
     user_sub_df_slim = (
@@ -78,7 +76,8 @@ def main_fn(job):
     usr_df = usr_df.drop("subscription")
     # adding feature column -domain
     usr_df = usr_df.withColumn(
-        "domain", split(split(col("email"), "@").getItem(1), ".com").getItem(0)
+        "email_domain",
+        split(split(col("email"), "@").getItem(1), ".com").getItem(0),
     )
 
     # temp table for qurying
@@ -99,12 +98,22 @@ def main_fn(job):
 
 def encryption_fn(usr_df):
     encrypt_message_fn = udf(lambda x: encrypt_message(x), StringType())
-    r = usr_df.withColumn(
-        "fname_en", encrypt_message_fn(col("firstname"))
-    ).show(500, False)
+    usr_df = usr_df.withColumn(
+        "fname_en", encrypt_message_fn(col("firstName"))
+    )
+    return usr_df
+
+
+def decryption_fn(usr_df):
+    decrypt_message_fn = udf(lambda x: decrypt_message(x), StringType())
+    usr_df = usr_df.withColumn("fname_de", decrypt_message_fn(col("fname_en")))
+    return usr_df
 
 
 job = JobManager("dna_mbr_mfi", config_path="conf/spark_net.yaml")
 usr_df = main_fn(job)
-encryption_fn(usr_df)
+usr_df = encryption_fn(usr_df)
+usr_df = decryption_fn(usr_df)
+
+usr_df.select("firstName", "fname_en", "fname_de").show(500, False)
 job.sc.stop()
