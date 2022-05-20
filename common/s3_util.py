@@ -4,11 +4,11 @@ import boto3
 
 
 def split_path_bucket_key(path):
-    """Split a full path into a bucket and key for s3 writes.
-
+    """
+    Split a full path into a bucket and key for s3 writes.
     Does what it says.
 
-    Parameters:
+    Args:
         path (str): full s3 path
     Returns:
         bucket (str): bucket portion of s3 path
@@ -23,6 +23,11 @@ def split_path_bucket_key(path):
 def uploadlocaltoS3(file_type, config):
     """
     Create trg file on cluster and upload on s3
+
+    Args:
+        file_type (str): Can be only User or Message
+        config (dict)    - config file which has all config params
+    Returns:
     """
     s3 = boto3.client("s3")
     if file_type == "user":
