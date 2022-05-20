@@ -14,7 +14,6 @@ def qry_output(job, sql_qry):
     Returns:
         df(pandas df)      - Pandas df with output of query
     """
-    # sql_qry = job.config["analytics_queries"][analytics_qry_hdr]["qry"]
     df = job.spark.sql(sql_qry).toPandas().reset_index(drop=True)
     return df
 

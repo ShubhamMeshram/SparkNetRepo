@@ -63,7 +63,6 @@ class JobManager(object):
                                    records are present for the partitionByCol
                                    based on the recency of ColforSlimming
         """
-        # prepare slim version with latest subscription status
         w = Window.partitionBy(partitionByCol)
         temp_df = (
             spark_df.withColumn("temp_col", f.max(ColforSlimming).over(w))
