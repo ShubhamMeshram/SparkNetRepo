@@ -69,11 +69,10 @@ def main_fn(job):
     )
 
     # temp table for qurying
-    msg_df.registerTempTable("msg_df")
-    usr_df.registerTempTable("usr_df")
-    user_attr_df.registerTempTable("user_attr_df")
-    user_sub_df.registerTempTable("user_sub_df")
-    user_sub_df_slim.registerTempTable("user_sub_df_slim")
+    msg_df.createOrReplaceTempView("msg_df")
+    usr_df.createOrReplaceTempView("usr_df")
+    user_sub_df.createOrReplaceTempView("user_sub_df")
+    user_sub_df_slim.createOrReplaceTempView("user_sub_df_slim")
 
     # write all 4 tables to S3
     job.write(usr_df, "user", job.config)
@@ -81,17 +80,21 @@ def main_fn(job):
     job.write(user_sub_df, "user_subscription", job.config)
     job.write(msg_df, "msg", job.config)
     GenerateAnalyticsOutput(job, job.config)
+    user_sub_df.unpersist()
+    user_attr_df.unpersist()
+    job.spark.catalog.dropTempView("msg_df")
+    job.spark.catalog.dropTempView("usr_df")
+    job.spark.catalog.dropTempView("user_sub_df")
+    job.spark.catalog.dropTempView("user_sub_df_slim")
     return usr_df, msg_df
 
 
 def encryption_fn(spark_df, col_tuple):
     for column in col_tuple:
-        print(column)
         spark_df = spark_df.withColumn(
             column + "_en", encrypt_message_udf(col(column))
         )
         spark_df = spark_df.drop(column)
-    print(spark_df.printSchema())
     return spark_df
 
 
@@ -120,6 +123,7 @@ msg_df_en = encryption_fn(
 
 job.write(usr_df_en, "user_en", job.config)
 job.write(msg_df_en, "msg_en", job.config)
+print("Done")
 
 
 # usr_df_de = decryption_fn(usr_df_en, ("firstName_en", "email_en"))
