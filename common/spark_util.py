@@ -27,8 +27,8 @@ def GenerateAnalyticsOutput(job, config):
     appended_data = pd.concat(appended_data, axis=1).replace(
         np.nan, "", regex=True
     )
-    job.WriteToRecentAndArchive(
+    job.write(
         job.spark.createDataFrame(appended_data).coalesce(1),
-        "analytics_op",
+        "analytics_op_recent",
         job.config,
     )
