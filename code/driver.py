@@ -14,6 +14,16 @@ from pyspark.sql.functions import col, explode_outer, split
 
 
 def main_fn(job):
+    """
+    Main method which performs data engineering on
+    the API response and creates other tables based
+    on certain logic which are uploaded to S3.
+
+    Args:
+        job (JobManager)   - initialized Jobmanager object for DNA of interest
+    Returns:
+        df (spark df)      - returns user dataframe to perform data protection
+    """
     job.config = job.add_dates_to_paths(job.config)
     usr_url = job.config["params"]["usr_api_endpoint"]
     msg_url = job.config["params"]["msg_api_endpoint"]

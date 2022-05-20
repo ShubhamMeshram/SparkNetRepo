@@ -6,20 +6,28 @@ from common.job_manager import JobManager
 
 def qry_output(job, sql_qry):
     """
-    Creates pandas df of values and dates based on query given in the config
+    Creates pandas df based on the query from the config file
 
     Args:
-        job (JobManager)   - initialized Jobmanager object for DNA of interest
-        query_base (str)   - SQL clause with dq check to be analyzed
+        job (JobManager)   - initialized Jobmanager object
+        sql_qry (str)      - SQL query to be run on the dataset
     Returns:
-        df (pandas dataframe)   - Pandas df with history of dq values
+        df(pandas df)      - Pandas df with output of query
     """
-    # sql_qry = job.config["analytics_queries"][analytics_qry_hdr]["qry"]
     df = job.spark.sql(sql_qry).toPandas().reset_index(drop=True)
     return df
 
 
 def GenerateAnalyticsOutput(job, config):
+    """
+    Creates pandas df appended side by side based
+    on the analytics queries from the config file. Writes the same to S3
+
+    Args:
+        job (JobManager)   - initialized Jobmanager object
+        config (dict)    - config file which has all config params
+    Returns:
+    """
     appended_data = []
     for analytics_query in config["analytics_queries"].keys():
         sql_qry = job.config["analytics_queries"][analytics_query]["qry"]
@@ -36,6 +44,15 @@ def GenerateAnalyticsOutput(job, config):
 
 
 def GenerateDQOutput(job, config):
+    """
+    Creates pandas df appended side by side based
+    on the DQ queries from the config file. Writes the same to S3
+
+    Args:
+        job (JobManager)   - initialized Jobmanager object
+        config (dict)    - config file which has all config params
+    Returns:
+    """
     appended_data = []
     for analytics_query in config["dq_check_queries"].keys():
         sql_qry = job.config["dq_check_queries"][analytics_query]["qry"]

@@ -14,7 +14,7 @@ from common.secrets_mgr import get_secret
 class JobManager(object):
     """
     This is a class to be used in all of the module to interact with
-    SPARK and to perform read and writes.
+    SPARK and to perform various operations
     """
 
     def __init__(self, app_name, config_path=None, log_level="WARN"):
@@ -35,7 +35,6 @@ class JobManager(object):
         else:
             self.config = {"paths": {}}
 
-        # self.run_date = datetime.datetime.today()
         self.config_path = config_path
 
         self.app_name = app_name
@@ -44,15 +43,6 @@ class JobManager(object):
         self.logger = log4j_logger.LogManager.getLogger(self.app_name)
 
         self.spark = SparkSession.builder.appName(self.app_name).getOrCreate()
-        #    .config(
-        #        "fs.s3a.aws.credentials.provider",
-        #        "org.apache.hadoop.fs.s3a.AnonymousAWSCredentialsProvider",
-        #    )
-
-        # self.spark.conf.set(
-        #    "fs.s3a.assumed.role.arn",
-        #    "arn:aws:iam::113911312463:role/sparknet_iam_s3_role",
-        # )
         self.spark.conf.set("fs.s3a.access.key", get_secret("admin-ak"))
         self.spark.conf.set("fs.s3a.secret.key", get_secret("admin-sak"))
 
@@ -60,7 +50,20 @@ class JobManager(object):
         print(f"Started Spark application {self.app_name}")
 
     def GetLatestSlimDataset(self, partitionByCol, ColforSlimming, spark_df):
-        # prepare slim version with latest subscription status
+        """
+        Fetches the latest records (if duplicated/updated)
+
+        Args:
+            partitionByCol (str) - column based on which the paritioning
+                                   needs to happen to get the latest record.
+            ColforSlimming (str) - column on which the window is applied
+            spark_df (spark df)  - dataframe on which the slimming happens
+
+        Returns:
+            spark_df (spark df)  - dataframe which is reduced to ensure latest
+                                   records are present for the partitionByCol
+                                   based on the recency of ColforSlimming
+        """
         w = Window.partitionBy(partitionByCol)
         temp_df = (
             spark_df.withColumn("temp_col", f.max(ColforSlimming).over(w))
@@ -70,6 +73,17 @@ class JobManager(object):
         return temp_df
 
     def write(self, df, table_name, config, mode="overwrite"):
+        """
+        Write a table into file
+
+        Args:
+            df (SPARK DataFrame) - dataframe to be written
+            table_name (str) - name of the table to be written
+            config (dict)    - config file which has all config params
+            mode (str) - writting mode to be passed to write function
+
+        Returns:
+        """
         print(f"Starting write operation for {table_name} dataset\n")
         path = config["paths"][table_name]["path"]
         fmt = config["paths"][table_name]["format"]
@@ -87,9 +101,6 @@ class JobManager(object):
             ).parquet(
                 path, mode=mode
             )
-
-            # option(mode, mode).
-
         elif fmt == "csv":
             df.write.csv(path, header=True, sep=",", mode=mode)
         else:
@@ -107,14 +118,13 @@ class JobManager(object):
             (str) - current run date
         """
         run_date = datetime.datetime.today()
-        # run_date = datetime.datetime.strptime(datetime.datetime.today(), "%Y-%m-%d")
         date_fmt = run_date.strftime(fmt)
 
         return date_fmt
 
     def add_date_info(self, df):
         """
-        Adds the DATE, DAY, MONTH and YEAR columns to a dataframe
+        Adds the insert_date, DAY, MONTH and YEAR columns to a dataframe
 
         Args:
             df (Dataframe) - datafarame that the columns are to be added onto
@@ -135,9 +145,9 @@ class JobManager(object):
 
     def add_dates_to_paths(self, config):
         """
-        Modifies the paths inside of job.config["paths"] replacing the
+        Modifies the paths inside of config file replacing the
         year and month placeholders with actual dates and months
-        obtained either from the config or from current datetime
+        obtained from the current datetime
         """
 
         date_str = self.get_run_date_str("%Y%m%d")
@@ -154,6 +164,15 @@ class JobManager(object):
         return config
 
     def ConvertStringToTimeStamp(self, spark_df, ts_col):
+        """
+        Casts the string representation of time into timestamp data type
+
+        Args:
+            spark_df (Dataframe) - datafarame that contains string timestamp
+            ts_col (str)         - columns which needs to be converted
+        Returns:
+            (Dataframe) - dataframe with correct timestamp data type
+        """
         spark_df = spark_df.withColumn(
             "temp_ts_col", spark_df[ts_col].cast(TimestampType())
         )
@@ -162,6 +181,20 @@ class JobManager(object):
         return spark_df
 
     def WriteToRecentAndArchive(self, spark_df, path_name, config):
+        """
+        Upload dataset to recent and archive S3 locations.
+        This method adds housekeeping columns to the archive dataset
+        and removes them from the recent dataset and then uploads to
+        respective S3 locations fetched from the config file
+
+        Args:
+            spark_df (Dataframe) - datafarame that needs to be uploaded
+            path_name (str)      - path to which recent and archive keyword
+                                   is appended and then parsed in config
+            config (dict)        - config file which has all config params
+
+        Returns:
+        """
         spark_df = self.add_date_info(spark_df)
         self.write(spark_df, path_name + "_recent", config)  # write to recent
         self.write(
@@ -172,10 +205,3 @@ class JobManager(object):
         print(
             f"Completed writing to recent and archive S3 location for *{path_name}* dataset\n"
         )
-
-    """
-    def ReadConfigFile(yaml_file):
-        with open("conf/spark_net.yaml") as config_file:
-            config = yaml.load(config_file, Loader=yaml.FullLoader)
-        return config
-        """
