@@ -95,7 +95,7 @@ def main_fn(job):
 job = JobManager("SparkNetApp", config_path="conf/spark_net.yaml")
 usr_df = main_fn(job)
 usr_df = usr_df.persist()
-usr_df_en = encryption_fn(usr_df, ("firstName", "email"))
+usr_df_en = encryption_fn(usr_df, ("firstName",))
 job.write(usr_df_en, "user_en", job.config)
 usr_df.unpersist()
 job.sc.stop()
