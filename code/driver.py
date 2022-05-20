@@ -81,45 +81,48 @@ def main_fn(job):
     job.write(user_sub_df, "user_subscription", job.config)
     job.write(msg_df, "msg", job.config)
     GenerateAnalyticsOutput(job, job.config)
-    return usr_df
+    return usr_df, msg_df
 
 
-def encryption_fn(usr_df, col_tuple):
+def encryption_fn(spark_df, col_tuple):
     for column in col_tuple:
-        usr_df = usr_df.withColumn(
+        spark_df = spark_df.withColumn(
             column + "_en", encrypt_message_udf(col(column))
         )
-    temp_df = usr_df.drop(*col_tuple)
+    temp_df = spark_df.drop(*col_tuple)
     return temp_df
 
 
-def decryption_fn(usr_df, col_tuple):
-    for name in usr_df.schema.names:
-        usr_df = usr_df.withColumnRenamed(name, name.replace("_en", ""))
+def decryption_fn(spark_df, col_tuple):
+    for name in spark_df.schema.names:
+        spark_df = spark_df.withColumnRenamed(name, name.replace("_en", ""))
     temp_list = []
     col_list = list(col_tuple)
     for i in col_list:
         i = i.replace("_en", "")
         temp_list.append(i)
     col_tuple = tuple(temp_list)
-    print(col_tuple)
-    # print(usr_df.printSchema())
     for column in col_tuple:
-        print(column)
-        usr_df = usr_df.withColumn(column, decrypt_message_udf(col(column)))
-    # temp_df = usr_df.drop(*col_tuple)
-    return usr_df
+        spark_df = spark_df.withColumn(
+            column, decrypt_message_udf(col(column))
+        )
+    return spark_df
 
 
 job = JobManager("SparkNetApp", config_path="conf/spark_net.yaml")
-usr_df = main_fn(job)
+usr_df, msg_df = main_fn(job)
 usr_df_en = encryption_fn(usr_df, ("firstName", "email"))
-print(usr_df_en.printSchema())
-usr_df_de = decryption_fn(usr_df_en, ("firstName_en", "email_en"))
+msg_df_en = encryption_fn(msg_df, ("message"))
+
+job.write(usr_df_en, "user_en", job.config)
+job.write(msg_df_en, "msg_en", job.config)
 
 
-usr_df.select("firstName", "email").show(500, False)
-usr_df_en.select("firstName_en", "email_en").show(500, False)
-usr_df_de.select("firstName", "email").show(500, False)
+# usr_df_de = decryption_fn(usr_df_en, ("firstName_en", "email_en"))
+
+
+# usr_df.select("firstName", "email").show(500, False)
+# usr_df_en.select("firstName_en", "email_en").show(500, False)
+# usr_df_de.select("firstName", "email").show(500, False)
 
 # job.sc.stop()

@@ -4,31 +4,36 @@ params:
   usr_json_response: "/home/ubuntu/sparknet/raw/usr_api.json"
   msg_json_response: "/home/ubuntu/sparknet/raw/msg_api.json"
 
-
 paths:
   # intermediate raw datasets
   usr_api_raw:
-    path: 's3a://sparknet-bucket/sparknet/raw/usr_api.json'
+    path: 's3a://sparknet-pii-bucket/sparknet/raw/usr_api.json'
   msg_api_raw:
-    path: 's3a://sparknet-bucket/sparknet/raw/msg_api.json'
+    path: 's3a://sparknet-pii-bucket/sparknet/raw/msg_api.json'
 
   # Output datasets
-  #    path: 's3a://sparknet-bucket/sparknet/processed/user/year={str_year}/month={str_month}/day={str_day}'
+  #    path: 's3a://sparknet-pii-bucket/sparknet/processed/user/year={str_year}/month={str_month}/day={str_day}'
   #    path: '/home/ubuntu/sparknet/processed/user/year={str_year}/month={str_month}/day={str_day}'
   user:
-    path: 's3a://sparknet-bucket/sparknet/processed/user/year={str_year}/month={str_month}/day={str_day}'
+    path: 's3a://sparknet-pii-bucket/sparknet/processed/user/year={str_year}/month={str_month}/day={str_day}'
+    format: 'parquet'
+  user_en:
+    path: 's3a://sparknet-nonpii-bucket-appr1/sparknet/processed/user/year={str_year}/month={str_month}/day={str_day}'
     format: 'parquet'
   user_subscription:
-    path: 's3a://sparknet-bucket/sparknet/processed/user_subscription/year={str_year}/month={str_month}/day={str_day}'
+    path: 's3a://sparknet-pii-bucket/sparknet/processed/user_subscription/year={str_year}/month={str_month}/day={str_day}'
     format: 'parquet'
   user_attributes:
-    path: 's3a://sparknet-bucket/sparknet/processed/user_attributes/year={str_year}/month={str_month}/day={str_day}'
+    path: 's3a://sparknet-pii-bucket/sparknet/processed/user_attributes/year={str_year}/month={str_month}/day={str_day}'
     format: 'parquet'
   msg:
-    path: 's3a://sparknet-bucket/sparknet/processed/msg/year={str_year}/month={str_month}/day={str_day}'
+    path: 's3a://sparknet-pii-bucket/sparknet/processed/msg/year={str_year}/month={str_month}/day={str_day}'
+    format: 'parquet'
+  msg_en:
+    path: 's3a://sparknet-nonpii-bucket-appr1/sparknet/processed/msg/year={str_year}/month={str_month}/day={str_day}'
     format: 'parquet'
   analytics_op:
-    path: 's3a://sparknet-bucket/sparknet/processed/analytics_op/year={str_year}/month={str_month}/day={str_day}'
+    path: 's3a://sparknet-pii-bucket/sparknet/processed/analytics_op/year={str_year}/month={str_month}/day={str_day}'
     format: 'csv'
 
 
