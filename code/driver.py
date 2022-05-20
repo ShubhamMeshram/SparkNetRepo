@@ -104,8 +104,8 @@ usr_df, msg_df = main_fn(job)
 usr_df_en = MaskApproach2Method(usr_df, ["firstName", "lastName", "address"])
 msg_df_en = MaskApproach2Method(msg_df, ["message"])
 
-job.WriteToRecentAndArchive(usr_df_en, "msg", job.config)
-job.WriteToRecentAndArchive(msg_df_en, "msg", job.config)
+job.WriteToRecentAndArchive(usr_df_en, "user_en", job.config)
+job.WriteToRecentAndArchive(msg_df_en, "msg_en", job.config)
 
 usr_df.unpersist()
 msg_df.unpersist()
