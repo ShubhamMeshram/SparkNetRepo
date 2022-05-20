@@ -96,12 +96,14 @@ def encryption_fn(usr_df, col_tuple):
 def decryption_fn(usr_df, col_tuple):
     for name in usr_df.schema.names:
         usr_df = usr_df.withColumnRenamed(name, name.replace("_en", ""))
-    col_tuple = [
-        tuple(map(lambda i: str.replace(i, "_en", ""), tup))
-        for tup in col_tuple
-    ]
+    temp_list = []
+    col_list = list(col_tuple)
+    for i in col_list:
+        i = i.replace("_en", "")
+        temp_list.append(i)
+    col_tuple = tuple(col_list)
     print(col_tuple)
-    print(usr_df.printSchema())
+    # print(usr_df.printSchema())
     for column in col_tuple:
         print(column)
         usr_df = usr_df.withColumn(column, decrypt_message_udf(col(column)))
