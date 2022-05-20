@@ -4,7 +4,7 @@ import pandas as pd
 from common.job_manager import JobManager
 
 
-def qry_output(job, analytics_qry_hdr):
+def qry_output(job, sql_qry):
     """
     Creates pandas df of values and dates based on query given in the config
 
@@ -14,7 +14,7 @@ def qry_output(job, analytics_qry_hdr):
     Returns:
         df (pandas dataframe)   - Pandas df with history of dq values
     """
-    sql_qry = job.config["analytics_queries"][analytics_qry_hdr]["qry"]
+    # sql_qry = job.config["analytics_queries"][analytics_qry_hdr]["qry"]
     df = job.spark.sql(sql_qry).toPandas().reset_index(drop=True)
     return df
 
@@ -22,7 +22,8 @@ def qry_output(job, analytics_qry_hdr):
 def GenerateAnalyticsOutput(job, config):
     appended_data = []
     for analytics_query in config["analytics_queries"].keys():
-        df_temp = qry_output(job, analytics_query)
+        sql_qry = job.config["analytics_queries"][analytics_query]["qry"]
+        df_temp = qry_output(job, sql_qry)
         appended_data.append(df_temp)
     appended_data = pd.concat(appended_data, axis=1).replace(
         np.nan, "", regex=True
@@ -33,10 +34,12 @@ def GenerateAnalyticsOutput(job, config):
         job.config,
     )
 
+
 def GenerateDQOutput(job, config):
     appended_data = []
     for analytics_query in config["dq_check_queries"].keys():
-        df_temp = qry_output(job, analytics_query)
+        sql_qry = job.config["dq_check_queries"][analytics_query]["qry"]
+        df_temp = qry_output(job, sql_qry)
         appended_data.append(df_temp)
     appended_data = pd.concat(appended_data, axis=1).replace(
         np.nan, "", regex=True
