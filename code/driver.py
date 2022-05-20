@@ -93,18 +93,28 @@ def encryption_fn(usr_df, col_tuple):
     return temp_df
 
 
-def decryption_fn(usr_df, col_list):
-    usr_df = usr_df.withColumn(
-        "fname_de", decrypt_message_udf(col("fname_en"))
-    )
-    return usr_df
+def decryption_fn(usr_df, col_tuple):
+    # usr_df = usr_df.withColumn(
+    #    "fname_de", decrypt_message_udf(col("fname_en"))
+    # )
+    # return usr_df
+    for column in col_tuple:
+        usr_df = usr_df.withColumn(
+            column + "_de", decrypt_message_udf(col(column))
+        )
+    temp_df = usr_df.drop(*col_tuple)
+    return temp_df
 
 
 job = JobManager("SparkNetApp", config_path="conf/spark_net.yaml")
 usr_df = main_fn(job)
 usr_df_en = encryption_fn(usr_df, ("firstName", "email"))
 # usr_df = decryption_fn(usr_df)
+usr_df_de = decryption_fn(usr_df_en, ("firstName_en", "email_en"))
+
 
 usr_df.select("firstName", "email").show(500, False)
 usr_df_en.select("firstName_en", "email_en").show(500, False)
+usr_df_de.select("firstName_de", "email_de").show(500, False)
+
 # job.sc.stop()
