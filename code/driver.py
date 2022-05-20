@@ -120,6 +120,6 @@ usr_df_de = decryption_fn(usr_df_en, ("firstName_en", "email_en"))
 
 usr_df.select("firstName", "email").show(500, False)
 usr_df_en.select("firstName_en", "email_en").show(500, False)
-usr_df_de.select("firstName_de", "email_de").show(500, False)
+usr_df_de.select("firstName", "email").show(500, False)
 
 # job.sc.stop()
