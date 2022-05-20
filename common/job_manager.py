@@ -104,6 +104,27 @@ class JobManager(object):
 
         return date_fmt
 
+    def add_date_info(self, df):
+        """
+        Adds the DATE, DAY, MONTH and YEAR columns to a dataframe
+
+        Args:
+            df (Dataframe) - datafarame that the columns are to be added onto
+
+        Returns:
+            (Dataframe) - dataframe with additional columns
+        """
+        date_str = self.get_run_date_str("%Y%m%d")
+
+        df_out = (
+            df.withColumn("date", sqlf.lit(date_str))
+            .withColumn("day", sqlf.lit(date_str[6:8]))
+            .withColumn("month", sqlf.lit(date_str[4:6]))
+            .withColumn("year", sqlf.lit(date_str[0:4]))
+        )
+
+        return df_out
+
     def add_dates_to_paths(self, config):
         """
         Modifies the paths inside of job.config["paths"] replacing the

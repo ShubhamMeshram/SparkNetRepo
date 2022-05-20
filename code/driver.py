@@ -68,13 +68,34 @@ def main_fn(job):
         split(split(col("email"), "@").getItem(1), ".com").getItem(0),
     )
 
-    # write all 4 tables to S3
-    job.write(usr_df, "user", job.config)
-    job.write(user_attr_df, "user_attributes", job.config)
-    job.write(user_sub_df, "user_subscription", job.config)
-    job.write(msg_df, "msg", job.config)
+    # adding timestamp columns
+    usr_df = job.add_date_info(usr_df)
+    user_attr_df = job.add_date_info(user_attr_df)
+    user_sub_df = job.add_date_info(user_sub_df)
+    msg_df = job.add_date_info(msg_df)
 
-    # temp table for qurying
+    # write to archive S3 location
+    job.write(usr_df, "user_recent", job.config)
+    job.write(user_attr_df, "user_attributes_recent", job.config)
+    job.write(user_sub_df, "user_subscription_recent", job.config)
+    job.write(msg_df, "msg_recent", job.config)
+
+    # write to recent S3 location
+    job.write(usr_df.drop("year", "month", "day"), "user_archive", job.config)
+    job.write(
+        user_attr_df.drop("year", "month", "day"),
+        "user_attr_df_archive",
+        job.config,
+    )
+    job.write(
+        user_sub_df.drop("year", "month", "day"),
+        "user_sub_df_archive",
+        job.config,
+    )
+    job.write(
+        msg_df.drop("year", "month", "day"), "msg_df_archive", job.config
+    )
+
     msg_df.createOrReplaceTempView("msg_df")
     usr_df.createOrReplaceTempView("usr_df")
     user_sub_df.createOrReplaceTempView("user_sub_df")
@@ -96,7 +117,11 @@ job = JobManager("SparkNetApp", config_path="conf/spark_net.yaml")
 usr_df = main_fn(job)
 usr_df = usr_df.persist()
 usr_df_en = encryption_fn(usr_df, ("firstName",))
-job.write(usr_df_en, "user_en", job.config)
+usr_df_en = job.add_date_info(usr_df_en)
+job.write(usr_df_en, "usr_df_en_archive", job.config)
+job.write(
+    usr_df_en.drop("year", "month", "day"), "usr_df_en_archive", job.config
+)
 usr_df.unpersist()
 job.sc.stop()
 print("Done")
