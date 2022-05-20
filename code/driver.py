@@ -111,6 +111,7 @@ def decryption_fn(usr_df, col_tuple):
 job = JobManager("SparkNetApp", config_path="conf/spark_net.yaml")
 usr_df = main_fn(job)
 usr_df_en = encryption_fn(usr_df, ("firstName", "email"))
+print(usr_df_en.printSchema())
 usr_df_de = decryption_fn(usr_df_en, ("firstName_en", "email_en"))
 
 
