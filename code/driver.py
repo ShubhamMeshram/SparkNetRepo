@@ -102,7 +102,9 @@ def main_fn(job):
 job = JobManager("SparkNetApp", config_path="conf/spark_net.yaml")
 usr_df = main_fn(job)
 usr_df = usr_df.persist()
-usr_df_en = encryption_fn(usr_df, ("firstName",))
+usr_df_en = DropColsApproach3Method(
+    usr_df, ["firstName", "lastName", "address"]
+)
 job.write(usr_df_en, "user_en_recent", job.config)
 usr_df.unpersist()
 job.sc.stop()

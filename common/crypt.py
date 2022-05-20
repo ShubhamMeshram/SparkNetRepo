@@ -98,3 +98,20 @@ def decryption_fn(spark_df, col_tuple):
             column, decrypt_message_udf(col(column))
         )
     return spark_df
+
+
+def DropColsApproach3Method(spark_df, drop_col_list):
+    """
+    Psuedo encryption method for Approach3, drops the given list of column(s)
+    This method loses the original value
+
+    Args:
+        df (SPARK DataFrame)     - dataframe to be decrypted
+        drop_col_list (list)     - collection of column(s) to be dropped
+
+    Returns:
+        spark_df(SPARK DataFrame)- Trimmed Spark dataframe
+    """
+    for drop_col in drop_col_list:
+        spark_df = spark_df.drop(drop_col)
+    return spark_df
