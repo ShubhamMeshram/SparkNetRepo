@@ -73,7 +73,10 @@ def main_fn(job):
     usr_df.createOrReplaceTempView("usr_df")
     user_sub_df.createOrReplaceTempView("user_sub_df")
     user_sub_df_slim.createOrReplaceTempView("user_sub_df_slim")
+    user_attr_df.createOrReplaceTempView("user_attr_df")
+
     GenerateAnalyticsOutput(job, job.config)
+    GenerateDQOutput(job, job.config)
 
     # clean up for better performance
     user_sub_df.unpersist()

@@ -44,8 +44,8 @@ paths:
   analytics_op_recent:
     path: 's3a://sparknet-pii-bucket/sparknet/processed/analytics_op/recent'
     format: 'csv'
-  analytics_op_archive:
-    path: 's3a://sparknet-pii-bucket/sparknet/processed/analytics_op/archive/year={str_year}/month={str_month}/day={str_day}'
+  dq_op_recent:
+    path: 's3a://sparknet-pii-bucket/sparknet/processed/dq_op/recent'
     format: 'csv'
 
 # Output datasets - Encrypted data
@@ -67,5 +67,17 @@ analytics_queries:
         qry: "SELECT distinct(userId) as freemiuim_userId from user_sub_df_slim where status !='Active' intersect SELECT distinct(senderId) as sub_cnt from msg_df"
 
 dq_check_queries:
-  msgs_sent_per_day:
-      qry: "SUM(CASE WHEN sale_price_ranges NOT IN ('C','L','B','I','F','J','E','U','H','D','G','K','') THEN 1 ELSE 0 END)"
+  null_zip_cnt:
+      qry: "SELECT count(*) as null_zip_cnt from usr_df where zipCode is null"
+  dup_msgId_cnt:
+      qry: "SELECT msgId,count(*) as dup_msgId_cnt from msg_df group by msgId having dup_msgId_cnt > 1"
+  dup_usrId_cnt:
+      qry: "SELECT userId,count(*) as dup_usrId_cnt from usr_df group by userId having dup_usrId_cnt > 1"
+  null_gendr_cnt:
+      qry: "SELECT count(*) as null_gendr_cnt from user_attr_df where gender is null"
+  null_income_cnt:
+      qry: "SELECT count(*) as null_income_cnt from user_attr_df where income is null"
+  null_subs_amt_cnt:
+      qry: "SELECT count(*) as null_subs_amt_cnt from user_sub_df where amount is null"
+  null_subs_status_cnt:
+      qry: "SELECT count(*) as null_subs_status_cnt from user_sub_df where status  is null"
