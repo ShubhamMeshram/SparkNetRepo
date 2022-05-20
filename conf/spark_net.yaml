@@ -34,13 +34,13 @@ paths:
     format: 'csv'
 
 # Output datasets - Encrypted data
-msg_en:
-    path: 's3a://sparknet-nonpii-bucket-appr1/sparknet/processed/msg/year={str_year}/month={str_month}/day={str_day}'
-    format: 'parquet'
+  msg_en:
+      path: 's3a://sparknet-nonpii-bucket-appr1/sparknet/processed/msg/year={str_year}/month={str_month}/day={str_day}'
+      format: 'parquet'
 
-user_en:
-    path: 's3a://sparknet-nonpii-bucket-appr1/sparknet/processed/user/year={str_year}/month={str_month}/day={str_day}'
-    format: 'parquet'
+  user_en:
+      path: 's3a://sparknet-nonpii-bucket-appr1/sparknet/processed/user/year={str_year}/month={str_month}/day={str_day}'
+      format: 'parquet'
 
 analytics_queries:
     msgs_sent_per_day:
