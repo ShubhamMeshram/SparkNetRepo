@@ -96,14 +96,18 @@ def main_fn(job):
     job.spark.catalog.dropTempView("user_sub_df")
     job.spark.catalog.dropTempView("user_sub_df_slim")
 
-    return usr_df
+    return usr_df, msg_df
 
 
 job = JobManager("SparkNetApp", config_path="conf/spark_net.yaml")
-usr_df = main_fn(job)
-usr_df = usr_df.persist()
+usr_df, msg_df = main_fn(job)
 usr_df_en = MaskApproach2Method(usr_df, ["firstName", "lastName", "address"])
-job.write(usr_df_en, "user_en_recent", job.config)
+msg_df_en = MaskApproach2Method(msg_df, ["message"])
+
+job.WriteToRecentAndArchive(usr_df_en, "msg", job.config)
+job.WriteToRecentAndArchive(msg_df_en, "msg", job.config)
+
 usr_df.unpersist()
+msg_df.unpersist()
 job.sc.stop()
 print("Done")
