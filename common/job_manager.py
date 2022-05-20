@@ -117,7 +117,7 @@ class JobManager(object):
         date_str = self.get_run_date_str("%Y%m%d")
 
         df_out = (
-            df.withColumn("date", sqlf.lit(date_str))
+            df.withColumn("insert_date", sqlf.lit(date_str))
             .withColumn("day", sqlf.lit(date_str[6:8]))
             .withColumn("month", sqlf.lit(date_str[4:6]))
             .withColumn("year", sqlf.lit(date_str[0:4]))
@@ -162,5 +162,5 @@ class JobManager(object):
             config,
         )  # write to archive
         print(
-            f"Completed writing to recent and archive S3 location for *{path_name}* dataset "
+            f"Completed writing to recent and archive S3 location for *{path_name}* dataset\n"
         )

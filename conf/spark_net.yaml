@@ -58,7 +58,7 @@ paths:
 
 analytics_queries:
     msgs_sent_per_day:
-        qry: "SELECT count(*) as msg_cnt,to_date(createdAt) as createdAt_dt FROM msg_df group by date order by msg_cnt desc"
+        qry: "SELECT count(*) as msg_cnt,to_date(createdAt) as createdAt_dt FROM msg_df group by createdAt_dt order by msg_cnt desc"
     lonely_users:
         qry: "SELECT distinct(userId) as lonely_usrId FROM usr_df except SELECT distinct(receiverId) FROM msg_df"
     active_sub_cnt:
