@@ -84,17 +84,15 @@ def main_fn(job):
     job.write(usr_df.drop("year", "month", "day"), "user_archive", job.config)
     job.write(
         user_attr_df.drop("year", "month", "day"),
-        "user_attr_df_archive",
+        "user_attributes_archive",
         job.config,
     )
     job.write(
         user_sub_df.drop("year", "month", "day"),
-        "user_sub_df_archive",
+        "user_subscription_archive",
         job.config,
     )
-    job.write(
-        msg_df.drop("year", "month", "day"), "msg_df_archive", job.config
-    )
+    job.write(msg_df.drop("year", "month", "day"), "msg_archive", job.config)
 
     msg_df.createOrReplaceTempView("msg_df")
     usr_df.createOrReplaceTempView("usr_df")
