@@ -40,5 +40,28 @@ def decrypt_message(encrypted_message):
     return decrypted_message.decode()
 
 
-encrypt_message_udf = udf(lambda x: encrypt_message(x), StringType())
-decrypt_message_udf = udf(lambda x: decrypt_message(x), StringType())
+def encryption_fn(spark_df, col_tuple):
+    encrypt_message_udf = udf(lambda x: encrypt_message(x), StringType())
+    for column in col_tuple:
+        spark_df = spark_df.withColumn(
+            column + "_en", encrypt_message_udf(col(column))
+        )
+        spark_df = spark_df.drop(column)
+    return spark_df
+
+
+def decryption_fn(spark_df, col_tuple):
+    decrypt_message_udf = udf(lambda x: decrypt_message(x), StringType())
+    for name in spark_df.schema.names:
+        spark_df = spark_df.withColumnRenamed(name, name.replace("_en", ""))
+    temp_list = []
+    col_list = list(col_tuple)
+    for i in col_list:
+        i = i.replace("_en", "")
+        temp_list.append(i)
+    col_tuple = tuple(temp_list)
+    for column in col_tuple:
+        spark_df = spark_df.withColumn(
+            column, decrypt_message_udf(col(column))
+        )
+    return spark_df

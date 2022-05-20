@@ -62,56 +62,34 @@ def main_fn(job):
     )
     usr_df = usr_df.drop("profile")
     usr_df = usr_df.drop("subscription")
-    # adding feature column -domain
+    # adding feature column - email_domain
     usr_df = usr_df.withColumn(
         "email_domain",
         split(split(col("email"), "@").getItem(1), ".com").getItem(0),
     )
-
-    # temp table for qurying
-    msg_df.createOrReplaceTempView("msg_df")
-    usr_df.createOrReplaceTempView("usr_df")
-    user_sub_df.createOrReplaceTempView("user_sub_df")
-    user_sub_df_slim.createOrReplaceTempView("user_sub_df_slim")
 
     # write all 4 tables to S3
     job.write(usr_df, "user", job.config)
     job.write(user_attr_df, "user_attributes", job.config)
     job.write(user_sub_df, "user_subscription", job.config)
     job.write(msg_df, "msg", job.config)
+
+    # temp table for qurying
+    msg_df.createOrReplaceTempView("msg_df")
+    usr_df.createOrReplaceTempView("usr_df")
+    user_sub_df.createOrReplaceTempView("user_sub_df")
+    user_sub_df_slim.createOrReplaceTempView("user_sub_df_slim")
     GenerateAnalyticsOutput(job, job.config)
+
+    # clean up for better performance
     user_sub_df.unpersist()
     user_attr_df.unpersist()
     job.spark.catalog.dropTempView("msg_df")
     job.spark.catalog.dropTempView("usr_df")
     job.spark.catalog.dropTempView("user_sub_df")
     job.spark.catalog.dropTempView("user_sub_df_slim")
+
     return usr_df, msg_df
-
-
-def encryption_fn(spark_df, col_tuple):
-    for column in col_tuple:
-        spark_df = spark_df.withColumn(
-            column + "_en", encrypt_message_udf(col(column))
-        )
-        spark_df = spark_df.drop(column)
-    return spark_df
-
-
-def decryption_fn(spark_df, col_tuple):
-    for name in spark_df.schema.names:
-        spark_df = spark_df.withColumnRenamed(name, name.replace("_en", ""))
-    temp_list = []
-    col_list = list(col_tuple)
-    for i in col_list:
-        i = i.replace("_en", "")
-        temp_list.append(i)
-    col_tuple = tuple(temp_list)
-    for column in col_tuple:
-        spark_df = spark_df.withColumn(
-            column, decrypt_message_udf(col(column))
-        )
-    return spark_df
 
 
 job = JobManager("SparkNetApp", config_path="conf/spark_net.yaml")
@@ -123,14 +101,6 @@ msg_df_en = encryption_fn(
 
 job.write(usr_df_en, "user_en", job.config)
 job.write(msg_df_en, "msg_en", job.config)
+
+job.sc.stop()
 print("Done")
-
-
-# usr_df_de = decryption_fn(usr_df_en, ("firstName_en", "email_en"))
-
-
-# usr_df.select("firstName", "email").show(500, False)
-# usr_df_en.select("firstName_en", "email_en").show(500, False)
-# usr_df_de.select("firstName", "email").show(500, False)
-
-# job.sc.stop()
