@@ -68,6 +68,11 @@ def main_fn(job):
         split(split(col("email"), "@").getItem(1), ".com").getItem(0),
     )
 
+    job.WriteToRecentAndArchive(usr_df, "user", job.config)
+    job.WriteToRecentAndArchive(user_attr_df, "user_attributes", job.config)
+    job.WriteToRecentAndArchive(user_sub_df, "user_subscription", job.config)
+    job.WriteToRecentAndArchive(msg_df, "msg", job.config)
+    """
     # adding timestamp columns
     usr_df = job.add_date_info(usr_df)
     user_attr_df = job.add_date_info(user_attr_df)
@@ -93,7 +98,7 @@ def main_fn(job):
         job.config,
     )
     job.write(msg_df.drop("year", "month", "day"), "msg_archive", job.config)
-
+    """
     msg_df.createOrReplaceTempView("msg_df")
     usr_df.createOrReplaceTempView("usr_df")
     user_sub_df.createOrReplaceTempView("user_sub_df")

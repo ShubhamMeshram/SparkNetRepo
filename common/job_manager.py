@@ -152,3 +152,15 @@ class JobManager(object):
         spark_df = spark_df.drop(ts_col)
         spark_df = spark_df.withColumnRenamed("temp_ts_col", ts_col)
         return spark_df
+
+    def WriteToRecentAndArchive(self, spark_df, path_name, config):
+        spark_df = self.add_date_info(spark_df)
+        self.write(spark_df, path_name + "_recent", config)  # write to recent
+        self.write(
+            spark_df.drop("year", "month", "day"),
+            path_name + "_archive",
+            config,
+        )  # write to archive
+        print(
+            f"Completed writing to recent and archive S3 location for *{path_name}* dataset "
+        )
