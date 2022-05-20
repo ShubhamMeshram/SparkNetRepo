@@ -107,8 +107,8 @@ def decryption_fn(usr_df, col_tuple):
     for column in col_tuple:
         print(column)
         usr_df = usr_df.withColumn(column, decrypt_message_udf(col(column)))
-    temp_df = usr_df.drop(*col_tuple)
-    return temp_df
+    # temp_df = usr_df.drop(*col_tuple)
+    return usr_df
 
 
 job = JobManager("SparkNetApp", config_path="conf/spark_net.yaml")
