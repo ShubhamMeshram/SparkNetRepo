@@ -42,6 +42,7 @@ def main_fn(job):
 
     usr_df = job.ConvertStringToTimeStamp(usr_df, "createdAt")
     usr_df = job.ConvertStringToTimeStamp(usr_df, "updatedAt")
+    usr_df = job.ConvertStringToTimeStamp(usr_df, "birthDate")
     msg_df = job.ConvertStringToTimeStamp(msg_df, "createdAt")
 
     usr_df = job.GetLatestSlimDataset("userId", "updatedAt", usr_df)

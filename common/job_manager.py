@@ -75,8 +75,16 @@ class JobManager(object):
         fmt = config["paths"][table_name]["format"]
         if fmt == "parquet":
             df.write.option("fs.s3a.committer.name", "partitioned").option(
-                "fs.s3a.committer.staging.conflict-mode", "replace"
-            ).option("fs.s3a.fast.upload.buffer", "bytebuffer").parquet(
+                "fs.s3a.committer.magic.enabled", "false"
+            ).option(
+                "fs.s3a.committer.staging.conflict-mode", "append"
+            ).option(
+                "fs.s3a.committer.staging.unique-filenames", "true"
+            ).option(
+                "fs.s3a.committer.staging.abort.pending.uploads", "true"
+            ).option(
+                "fs.s3a.fast.upload.buffer", "bytebuffer"
+            ).parquet(
                 path, mode=mode
             )
 
