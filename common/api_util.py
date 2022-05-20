@@ -5,6 +5,17 @@ import requests
 
 
 def PingAPI(url):
+    """
+    Pings the given API endpoint to check for health and returns response
+
+    Args:
+        url (string)         - API endpoint URL
+
+    Returns:
+        health_flag (str)    - Contains the info about the Response status
+        request (res)        - API response
+        error_msg (str)      - Contains information if API doesnt responsd
+    """
     print(f"Pinging the API {url}")
     request = requests.get(url, verify=False)
     if request.status_code == 200:
@@ -20,6 +31,14 @@ def PingAPI(url):
 
 
 def GenerateJSON(file, req):
+    """
+    Generates a JSON file from API response
+
+    Args:
+        file (str)           - a location on UNIX server to store the JSON file
+        req (res)            - API response object
+    Returns:
+    """
     print(f"Generating JSON at {file}")
     entity = req.json()
     if os.path.exists(file):
