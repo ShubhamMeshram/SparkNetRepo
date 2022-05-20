@@ -17,20 +17,31 @@ def ConvertStringToTimeStamp(spark_df, ts_col):
 
 def encrypt_message(message):
     """
-    Encrypts a message
+    Encrypts a given message
+
+    Args:
+        message (string)         - String to be encrypted
+
+    Returns:
+        encrypted_message (str)  - Contains the encrypted string
     """
 
     key = get_secret("sparknet-crpyt-key")
     encoded_message = message.encode()
     f = Fernet(key)
     encrypted_message = f.encrypt(encoded_message)
-
     return encrypted_message
 
 
 def decrypt_message(encrypted_message):
     """
-    Decrypts an encrypted message
+    Decrypts a given message
+
+    Args:
+        message (string)         - String to be decrypted
+
+    Returns:
+        encrypted_message (str)  - Contains the decrypted string
     """
     key = get_secret("sparknet-crpyt-key")
 
@@ -41,6 +52,17 @@ def decrypt_message(encrypted_message):
 
 
 def encryption_fn(spark_df, col_tuple):
+    """
+    Wrapper for the method encrypt_message. Creates a Spark UDF
+    and performs encryption on the given column(s)
+
+    Args:
+        df (SPARK DataFrame)     - dataframe to be encrypted
+        col_tuple (tuple)        - collection of column(s) to be encrypted
+
+    Returns:
+        spark_df(SPARK DataFrame)- Encrypted Spark dataframe
+    """
     encrypt_message_udf = udf(lambda x: encrypt_message(x), StringType())
     for column in col_tuple:
         spark_df = spark_df.withColumn(
@@ -51,6 +73,17 @@ def encryption_fn(spark_df, col_tuple):
 
 
 def decryption_fn(spark_df, col_tuple):
+    """
+    Wrapper for the method decrypt_message. Creates a Spark UDF
+    and performs decryption on the given column(s)
+
+    Args:
+        df (SPARK DataFrame)     - dataframe to be decrypted
+        col_tuple (tuple)        - collection of column(s) to be decrypted
+
+    Returns:
+        spark_df(SPARK DataFrame)- Decrypted Spark dataframe
+    """
     decrypt_message_udf = udf(lambda x: decrypt_message(x), StringType())
     for name in spark_df.schema.names:
         spark_df = spark_df.withColumnRenamed(name, name.replace("_en", ""))
@@ -68,6 +101,17 @@ def decryption_fn(spark_df, col_tuple):
 
 
 def MaskApproach2Method(spark_df, mask_col_list):
+    """
+    Psuedo encryption method for Approach2, replaces actual value litreally
+    with the keyword ***Masked***. This method loses the original value
+
+    Args:
+        df (SPARK DataFrame)     - dataframe to be decrypted
+        mask_col_list (tuple)        - collection of column(s) to be masked
+
+    Returns:
+        spark_df(SPARK DataFrame)- Masked Spark dataframe
+    """
     for mask_col in mask_col_list:
         spark_df = spark_df.withColumn(mask_col, lit("***Masked***"))
         return spark_df
