@@ -107,7 +107,7 @@ def decryption_fn(usr_df, col_tuple):
     print(usr_df.printSchema())
     for column in col_tuple:
         usr_df = usr_df.withColumn(
-            column + "_de", decrypt_message_udf(col(column))
+            column , decrypt_message_udf(col(column))
         )
     temp_df = usr_df.drop(*col_tuple)
     return temp_df
