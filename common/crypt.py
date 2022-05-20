@@ -69,7 +69,5 @@ def decryption_fn(spark_df, col_tuple):
 
 def MaskApproach2Method(spark_df, mask_col_list):
     for mask_col in mask_col_list:
-        spark_df = spark_df.withColumn(mask_col, lit("***Masked***")).show(
-            500, False
-        )
+        spark_df = spark_df.withColumn(mask_col, lit("***Masked***"))
         return spark_df
