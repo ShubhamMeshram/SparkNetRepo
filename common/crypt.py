@@ -1,6 +1,6 @@
 import cryptography
 from cryptography.fernet import Fernet
-from pyspark.sql.functions import col, udf
+from pyspark.sql.functions import col, lit, udf
 from pyspark.sql.types import StringType, TimestampType
 
 from common.secrets_mgr import get_secret
@@ -65,3 +65,11 @@ def decryption_fn(spark_df, col_tuple):
             column, decrypt_message_udf(col(column))
         )
     return spark_df
+
+
+def MaskApproach2Method(spark_df, mask_col_list):
+    for mask_col in mask_col_list:
+        spark_df = spark_df.withColumn(mask_col, lit("***Masked***")).show(
+            500, False
+        )
+        return spark_df
