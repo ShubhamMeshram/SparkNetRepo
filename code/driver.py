@@ -100,6 +100,11 @@ def decryption_fn(usr_df, col_tuple):
     # return usr_df
     for name in usr_df.schema.names:
         usr_df = usr_df.withColumnRenamed(name, name.replace("_en", ""))
+    col_tuple = [
+        tuple(map(lambda i: str.replace(i, "_en", ""), tup))
+        for tup in col_tuple
+    ]
+    print(usr_df.printSchema())
     for column in col_tuple:
         usr_df = usr_df.withColumn(
             column + "_de", decrypt_message_udf(col(column))
