@@ -44,8 +44,8 @@ paths:
   analytics_op_recent:
     path: 's3a://sparknet-pii-bucket/sparknet/processed/analytics_op/recent'
     format: 'csv'
-  analytics_op_archive:
-    path: 's3a://sparknet-pii-bucket/sparknet/processed/analytics_op/archive/year={str_year}/month={str_month}/day={str_day}'
+  dq_op_recent:
+    path: 's3a://sparknet-pii-bucket/sparknet/processed/dq_op/recent'
     format: 'csv'
 
 # Output datasets - Encrypted data

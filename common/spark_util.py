@@ -32,3 +32,17 @@ def GenerateAnalyticsOutput(job, config):
         "analytics_op_recent",
         job.config,
     )
+
+def GenerateDQOutput(job, config):
+    appended_data = []
+    for analytics_query in config["dq_check_queries"].keys():
+        df_temp = qry_output(job, analytics_query)
+        appended_data.append(df_temp)
+    appended_data = pd.concat(appended_data, axis=1).replace(
+        np.nan, "", regex=True
+    )
+    job.write(
+        job.spark.createDataFrame(appended_data).coalesce(1),
+        "dq_op_recent",
+        job.config,
+    )
