@@ -86,11 +86,13 @@ def main_fn(job):
 
 def encryption_fn(spark_df, col_tuple):
     for column in col_tuple:
+        print(column)
         spark_df = spark_df.withColumn(
             column + "_en", encrypt_message_udf(col(column))
         )
-    temp_df = spark_df.drop(*col_tuple)
-    return temp_df
+        spark_df = spark_df.drop(column)
+    print(spark_df.printSchema())
+    return spark_df
 
 
 def decryption_fn(spark_df, col_tuple):
