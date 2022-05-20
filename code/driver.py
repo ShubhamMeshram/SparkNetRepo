@@ -101,7 +101,7 @@ def decryption_fn(usr_df, col_tuple):
     for i in col_list:
         i = i.replace("_en", "")
         temp_list.append(i)
-    col_tuple = tuple(col_list)
+    col_tuple = tuple(temp_list)
     print(col_tuple)
     # print(usr_df.printSchema())
     for column in col_tuple:
