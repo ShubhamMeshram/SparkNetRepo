@@ -101,7 +101,9 @@ def decryption_fn(usr_df, col_tuple):
     for name in usr_df.schema.names:
         usr_df = usr_df.withColumnRenamed(name, name.replace("_en", ""))
     for column in col_tuple:
-        usr_df = usr_df.withColumn(column, decrypt_message_udf(col(column)))
+        usr_df = usr_df.withColumn(
+            column + "_de", decrypt_message_udf(col(column))
+        )
     temp_df = usr_df.drop(*col_tuple)
     return temp_df
 
@@ -114,6 +116,6 @@ usr_df_de = decryption_fn(usr_df_en, ("firstName_en", "email_en"))
 
 usr_df.select("firstName", "email").show(500, False)
 usr_df_en.select("firstName_en", "email_en").show(500, False)
-usr_df_de.select("firstName", "email").show(500, False)
+usr_df_de.select("firstName_de", "email_de").show(500, False)
 
 # job.sc.stop()
