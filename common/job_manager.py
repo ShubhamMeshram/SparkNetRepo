@@ -84,7 +84,7 @@ class JobManager(object):
 
         Returns:
         """
-        print(f"Starting write operation for {table_name} dataset\n")
+        print(f"Starting write operation for {table_name} dataset")
         path = config["paths"][table_name]["path"]
         fmt = config["paths"][table_name]["format"]
         if fmt == "parquet":
