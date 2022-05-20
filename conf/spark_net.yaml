@@ -38,7 +38,7 @@ paths:
     path: 's3a://sparknet-pii-bucket/sparknet/processed/msg/recent'
     format: 'parquet'
   msg_archive:
-    path: 's3a://sparknet-pii-bucket/sparknet/processed/msg/year={str_year}/archive/month={str_month}/day={str_day}'
+    path: 's3a://sparknet-pii-bucket/sparknet/processed/msg/archive/year={str_year}/month={str_month}/day={str_day}'
     format: 'parquet'
 
   analytics_op_recent:

@@ -164,3 +164,10 @@ class JobManager(object):
         print(
             f"Completed writing to recent and archive S3 location for *{path_name}* dataset\n"
         )
+
+    """
+    def ReadConfigFile(yaml_file):
+        with open("conf/spark_net.yaml") as config_file:
+            config = yaml.load(config_file, Loader=yaml.FullLoader)
+        return config
+        """

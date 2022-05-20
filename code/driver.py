@@ -13,10 +13,7 @@ from pyspark.sql.functions import *
 from pyspark.sql.functions import col, explode_outer, split
 
 
-def ReadConfigFile(yaml_file):
-    with open("conf/spark_net.yaml") as config_file:
-        config = yaml.load(config_file, Loader=yaml.FullLoader)
-    return config
+
 
 
 def main_fn(job):
