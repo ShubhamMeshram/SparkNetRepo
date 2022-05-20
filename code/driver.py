@@ -13,9 +13,6 @@ from pyspark.sql.functions import *
 from pyspark.sql.functions import col, explode_outer, split
 
 
-
-
-
 def main_fn(job):
     job.config = job.add_dates_to_paths(job.config)
     usr_url = job.config["params"]["usr_api_endpoint"]
@@ -92,7 +89,7 @@ job = JobManager("SparkNetApp", config_path="conf/spark_net.yaml")
 usr_df = main_fn(job)
 usr_df = usr_df.persist()
 usr_df_en = encryption_fn(usr_df, ("firstName",))
-job.WriteToRecentAndArchive(usr_df_en, "usr_df_en", job.config)
+job.WriteToRecentAndArchive(usr_df_en, "user_en", job.config)
 usr_df.unpersist()
 job.sc.stop()
 print("Done")

@@ -4,9 +4,6 @@ import pandas as pd
 from common.job_manager import JobManager
 
 
-
-
-
 def qry_output(job, analytics_qry_hdr):
     """
     Creates pandas df of values and dates based on query given in the config
@@ -30,7 +27,7 @@ def GenerateAnalyticsOutput(job, config):
     appended_data = pd.concat(appended_data, axis=1).replace(
         np.nan, "", regex=True
     )
-    job.write(
+    job.WriteToRecentAndArchive(
         job.spark.createDataFrame(appended_data).coalesce(1),
         "analytics_op",
         job.config,
