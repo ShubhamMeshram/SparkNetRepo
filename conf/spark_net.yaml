@@ -81,3 +81,9 @@ dq_check_queries:
       qry: "SELECT count(*) as null_subs_amt_cnt from user_sub_df where amount is null"
   null_subs_status_cnt:
       qry: "SELECT count(*) as null_subs_status_cnt from user_sub_df where status  is null"
+  null_city_cnt:
+      qry: "SELECT count(*) as null_city_cnt from usr_df where city is null"
+  null_addr_cnt:
+      qry: "SELECT count(*) as null_addr_cnt from usr_df where address is null"
+  null_cntry_cnt:
+      qry: "SELECT count(*) as null_cntry_cnt from usr_df where country is null"
