@@ -50,10 +50,16 @@ paths:
 
 # Output datasets - Encrypted data
   user_en_recent:
-      path: 's3a://sparknet-nonpii-bucket-appr1/sparknet/processed/user/recent'
+      path: 's3a://sparknet-nonpii-bucket-appr3/sparknet/processed/user/recent'
       format: 'parquet'
   user_en_archive:
-      path: 's3a://sparknet-nonpii-bucket-appr1/sparknet/processed/user/archive/year={str_year}/month={str_month}/day={str_day}'
+      path: 's3a://sparknet-nonpii-bucket-appr3/sparknet/processed/user/archive/year={str_year}/month={str_month}/day={str_day}'
+      format: 'parquet'
+  msg_en_recent:
+      path: 's3a://sparknet-nonpii-bucket-appr3/sparknet/processed/msg/recent'
+      format: 'parquet'
+  msg_en_archive:
+      path: 's3a://sparknet-nonpii-bucket-appr3/sparknet/processed/msg/archive/year={str_year}/month={str_month}/day={str_day}'
       format: 'parquet'
 
 analytics_queries:
