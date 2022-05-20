@@ -70,7 +70,7 @@ class JobManager(object):
         return temp_df
 
     def write(self, df, table_name, config, mode="overwrite"):
-        print(f"Starting write operation for {table_name} dataset")
+        print(f"Starting write operation for {table_name} dataset\n")
         path = config["paths"][table_name]["path"]
         fmt = config["paths"][table_name]["format"]
         if fmt == "parquet":
