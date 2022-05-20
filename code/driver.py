@@ -112,7 +112,9 @@ def decryption_fn(spark_df, col_tuple):
 job = JobManager("SparkNetApp", config_path="conf/spark_net.yaml")
 usr_df, msg_df = main_fn(job)
 usr_df_en = encryption_fn(usr_df, ("firstName", "email"))
-msg_df_en = encryption_fn(msg_df, ("message"))
+msg_df_en = encryption_fn(
+    msg_df, ("message",)
+)  # single element tuple requires a comma at the end
 
 job.write(usr_df_en, "user_en", job.config)
 job.write(msg_df_en, "msg_en", job.config)
