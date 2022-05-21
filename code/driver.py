@@ -76,11 +76,11 @@ def process_user(job):
         user_attr_df.createOrReplaceTempView("user_attr_df")
 
         # clean up for better performance
-        user_sub_df.unpersist()
-        user_attr_df.unpersist()
-        job.spark.catalog.dropTempView("usr_df")
-        job.spark.catalog.dropTempView("user_sub_df")
-        job.spark.catalog.dropTempView("user_sub_df_slim")
+        #user_sub_df.unpersist()
+        #user_attr_df.unpersist()
+        #job.spark.catalog.dropTempView("usr_df")
+        #job.spark.catalog.dropTempView("user_sub_df")
+        #job.spark.catalog.dropTempView("user_sub_df_slim")
 
         return usr_df
     else:
@@ -114,7 +114,7 @@ def process_msg(job):
         job.WriteToRecentAndArchive(msg_df, "msg", job.config)
 
         msg_df.createOrReplaceTempView("msg_df")
-        job.spark.catalog.dropTempView("msg_df")
+        #job.spark.catalog.dropTempView("msg_df")
         return msg_df
     else:
         print(f"Message API returning unhealthy response: {m_error_msg}")
