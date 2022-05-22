@@ -43,14 +43,14 @@ def process_user(job):
         usr_df = job.ConvertStringToTimeStamp(usr_df, "updatedAt")
         usr_df = job.ConvertStringToTimeStamp(usr_df, "birthDate")
 
-        usr_df = job.GetLatestSlimDataset("userId", "updatedAt", usr_df)
+        usr_df = job.ApplySCDOneMethod("userId", "updatedAt", usr_df)
 
         # create user_sub and user_attr table
         user_attr_df = usr_df.select("userId", "profile.*")
         user_sub_df = usr_df.select(
             "userId", explode_outer("subscription")
         ).select("userId", "col.*")
-        user_sub_df_slim = job.GetLatestSlimDataset(
+        user_sub_df_slim = job.ApplySCDOneMethod(
             "userId", "startDate", user_sub_df
         )
         usr_df = usr_df.drop("profile")
@@ -76,11 +76,11 @@ def process_user(job):
         user_attr_df.createOrReplaceTempView("user_attr_df")
 
         # clean up for better performance
-        #user_sub_df.unpersist()
-        #user_attr_df.unpersist()
-        #job.spark.catalog.dropTempView("usr_df")
-        #job.spark.catalog.dropTempView("user_sub_df")
-        #job.spark.catalog.dropTempView("user_sub_df_slim")
+        # user_sub_df.unpersist()
+        # user_attr_df.unpersist()
+        # job.spark.catalog.dropTempView("usr_df")
+        # job.spark.catalog.dropTempView("user_sub_df")
+        # job.spark.catalog.dropTempView("user_sub_df_slim")
 
         return usr_df
     else:
@@ -114,7 +114,7 @@ def process_msg(job):
         job.WriteToRecentAndArchive(msg_df, "msg", job.config)
 
         msg_df.createOrReplaceTempView("msg_df")
-        #job.spark.catalog.dropTempView("msg_df")
+        # job.spark.catalog.dropTempView("msg_df")
         return msg_df
     else:
         print(f"Message API returning unhealthy response: {m_error_msg}")
