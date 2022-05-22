@@ -81,16 +81,6 @@ def process_user(job):
         # job.spark.catalog.dropTempView("usr_df")
         # job.spark.catalog.dropTempView("user_sub_df")
         # job.spark.catalog.dropTempView("user_sub_df_slim")
-        print("usr_df columns")
-        for i in usr_df.columns:
-            print(i)
-        print("user_sub_df columns")
-        for i in user_sub_df.columns:
-            print(i)
-        print("user_attr_df columns")
-        for i in user_attr_df.columns:
-            print(i)
-
         return usr_df
     else:
         print(f"User API returning unhealthy response: {u_error_msg}")
@@ -124,9 +114,6 @@ def process_msg(job):
 
         msg_df.createOrReplaceTempView("msg_df")
         # job.spark.catalog.dropTempView("msg_df")
-        print("msg_df columns")
-        for i in msg_df.columns:
-            print(i)
         return msg_df
     else:
         print(f"Message API returning unhealthy response: {m_error_msg}")
