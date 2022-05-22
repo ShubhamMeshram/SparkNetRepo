@@ -43,14 +43,14 @@ def process_user(job):
         usr_df = job.ConvertStringToTimeStamp(usr_df, "updatedAt")
         usr_df = job.ConvertStringToTimeStamp(usr_df, "birthDate")
 
-        usr_df = job.GetLatestSlimDataset("userId", "updatedAt", usr_df)
+        usr_df = job.ApplySCDOneMethod("userId", "updatedAt", usr_df)
 
         # create user_sub and user_attr table
         user_attr_df = usr_df.select("userId", "profile.*")
         user_sub_df = usr_df.select(
             "userId", explode_outer("subscription")
         ).select("userId", "col.*")
-        user_sub_df_slim = job.GetLatestSlimDataset(
+        user_sub_df_slim = job.ApplySCDOneMethod(
             "userId", "startDate", user_sub_df
         )
         usr_df = usr_df.drop("profile")
