@@ -48,7 +48,7 @@ class JobManager(object):
         self.sc.setLogLevel(log_level)
         print(f"Started Spark application {self.app_name}")
 
-    def GetLatestSlimDataset(self, partitionByCol, ColforSlimming, spark_df):
+    def ApplySCDOneMethod(self, partitionByCol, ColforSlimming, spark_df):
         """
         Fetches the latest records (if duplicated/updated)
 
